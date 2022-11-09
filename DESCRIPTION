@@ -1,0 +1,40 @@
+Package: multiStateQTL
+Type: Package
+Date: 2021-10-18
+Title: Toolkit for the analysis of multi-state QTL data
+Version: 0.1.0
+Authors@R: c(person("Christina", "Del Azodi", role=c("aut", "cre"),
+        email="cazodi@svi.edu.au"))
+Maintainer: Davis McCarthy <dmccarthy@svi.edu.au>
+Description: A collection of tools for doing various analyses of
+        multi-state QTL data, with a focus on visualization and interpretation.
+License: GPL (>= 2)
+Encoding: UTF-8
+Depends: 
+    QTLExperiment,
+    SummarizedExperiment,
+    ComplexHeatmap,
+    data.table,
+    collapse
+Imports: 
+    methods,
+    S4Vectors,
+    grid,
+    dplyr,
+    tidyr,
+    matrixStats,
+    stats,
+    fitdistrplus,
+    viridis,
+    ggplot2,
+    circlize,
+    mashr
+Suggests: 
+    testthat, 
+    BiocStyle, 
+    knitr, 
+    covr,
+    rmarkdown
+Remotes: git::https://gitlab.svi.edu.au/cazodi/qtlexperiment
+VignetteBuilder: knitr
+RoxygenNote: 7.2.1

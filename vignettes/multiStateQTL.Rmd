@@ -1,0 +1,242 @@
+---
+title: "multistateQTL: Orchestrating multi-state QTL analysis in R"
+author:
+  - "Christina B Azodi"
+  - "Davis McCarthy"
+package: multiStateQTL
+date: "`r Sys.Date()`"
+output:
+    BiocStyle::html_document:
+        toc: true
+        toc_float: true
+vignette: >
+  %\VignetteIndexEntry{multistateQTL: Orchestrating multi-state QTL analysis in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r knitr-options, echo = FALSE}
+set.seed(42)
+knitr::opts_chunk$set(warning=FALSE, error=FALSE, message=FALSE, 
+                      fig.height = 6, fig.width = 8)
+```
+
+# Introduction
+
+`multiStateQTL` is a Bioconductor package for applying basic statistical tests (e.g., feature-wise FDR correction, calculating pairwise sharing), summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class, where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics. It also provides wrapper implementations of a number of multi-test correction methods (e.g., [mashr](https://github.com/stephenslab/mashr), [meta-soft](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3146723/), etc), which result in a set of multi-test corrected summary statistics. 
+
+## Installation
+
+QTLExperiment and multistateQTL can be installed from GitLab:
+
+```{r install-qtlexperiment}
+install.packages("devtools")
+devtools::install_git("https://gitlab.svi.edu.au/cazodi/qtlexperiment.git", build_vignettes = TRUE)
+devtools::install_git("https://gitlab.svi.edu.au/cazodi/multistateqtl.git", build_vignettes = TRUE)
+
+library(QTLExperiment)
+library(multistateQTL)
+```
+
+# 2. Simulating data
+
+## Estimate parameters from GTEx
+
+Provided with real QTL summary statistics as either a `QTLE` object or a named list with betas and error (and optionally pval or lfsr), key parameters are estimated that are used to simulate realistic multi-state QTL data. We demonstrate the parameter estimation function on publicly available summary statistics from GTEx (v8). Note that this data only contains tests that were called as significant by GTEx and vroom only loads the first chunk of results as it does not read .gz compressed objects well. This truncated dataset is used in the vignette for convenience, however, to estimate the default parameters in `qtleParams()` we downloaded QTL summary statistics for all associations tested for the 10 GTEx tissues with the largest sample sizes from [Google Cloud](https://console.cloud.google.com/storage/browser/gtex-resources/GTEx_Analysis_v8_QTLs/GTEx_Analysis_v8_eQTL_all_associations?pageState=(%22StorageObjectListTable%22%3A(%22f%22%3A%22%255B%255D%22))&prefix&forceOnObjectsSortingFiltering=false&cloudshell=true)). To speed up calculations we filtered this to include only associations on chromosome 1 and considered significant tests with pval < 0.05 and null tests with a pval > 0.1. 
+
+See [QTLExperiment](https://gitlab.svi.edu.au/cazodi/qtlexperiment) for more info on the `sumstats2qtle` function and for other approaches for reading in QTL summary statistics.
+
+The parameters estimated here include:
+
+- **Significant betas shape and rate:** Define the gamma distribution used to sample *mean effect sizes* for each QTL that is significant in at least one state. These simulated mean effect sizes are used as the mean parameter in `rnorm` to sample an effect size for each QTL for each state. The variance parameter for `rnorm` is user defined (default = 0.1).  
+- **Significant coefficient of variation (cv) shape and rate:** Define the gamma distribution used to sample the cv for each QTL in each state where that QTL is significant. The cv is multiplied by the simulated significant effect size for that test/state to get the simulated standard error values. 
+- **Null beta shape and rate:** Define the gamma distribution used to sample the effect sizes for each QTL in each state where the effect is not significant.
+- **Null beta cv shape and rate:** Define the gamma distribution used to sample the cv for each QTL in each state where that QTL is not significant. This cv is then multiplied by the simulated null effect size for that test/state to get the simulated stand error values.
+
+
+```{r load-gtex-data-from-ftp}
+ftp_path <- "http://ftp.ebi.ac.uk/pub/databases/spot/eQTL/sumstats/GTEx/tx/GTEx_tx_"
+input_web <- list(lung = paste0(ftp_path, "lung.all.tsv.gz"),
+                  thyroid = paste0(ftp_path, "thyroid.all.tsv.gz"),
+                  spleen = paste0(ftp_path, "spleen.all.tsv.gz"),
+                  blood = paste0(ftp_path, "blood.all.tsv.gz"))
+
+gtex <- sumstats2qtle(input_web, 
+                      feature_id = "molecular_trait_id",
+                      variant_id = "rsid", 
+                      betas = "beta",
+                      errors = "se",
+                      pvalues = "pvalue")
+gtex
+```
+
+Estimating parameters: 
+
+```{r estimate-parameters}}
+params <- qtleEstimate(gtex, thresh_sig = 0.05, thresh_null = 0.5)
+params
+```
+
+Looking at the distributions defined by these estimated parameters, the simulated effect sizes for significant QTL will tend to be larger, while the simulated coefficient of variation values will be smaller than the for non-significant QTL.
+
+```{r plot-estimated params, fig.height=3, fig.width=6, fig.cap="Gamma distributions defined by the parameters estimated by qtleEstimate."}
+plotSimulationParams(params=params)
+```
+
+The default parameters available through `qtleParams()` were estimated from the GTEx v8 tissue-level eQTL summary statistics from chromosome 1 using the 10 tissues with the largest sample sizes. From these data, significant QTL parameters were estimated from tests in the lowest p-value quantile, while null parameters were estimated from tests in the highest p-value quantile.  data for tests on chromosome 1 that were included in all four tissues (n=32613).
+
+
+## Simulate multi-state QTL data
+
+The simulation tool allows for the simulation of four types of associations: (1) Global, where the simulated effect size is approximately equal across all states; (2) Unique, where the association is only significant in one state; (3) Multi-state, where the association is significant in a subset of states (i.e., state-groups), and (4) Null, where the association has no significant effects in any state. First each test is randomly assigned as one of the above types according to the proportions specified by the user. For multi-state QTL, each state is assigned to a state-group, either randomly or according to user defined groups, then each multi-state QTL is assigned randomly to one of the state-groups. For unique QTL, the QTL is randomly assigned to a single state. 
+
+Simulated mean effect sizes for all non-null QTL are sampled from gamma(beta.sig.shape, beta.sig.rate) and are randomly assigned a positive or negative effect direction. Then for each state where that QTL is significant, an effect size is sampled from N(mean effect size, σ), where σ is user defined (default=0.1). Effect sizes for null QTL are sampled from gamma(beta.null.shape, beta.null.rate) and are randomly assigned a positive or negative effect direction. Standard errors for each QTL for each state are simulated by sampling from gamma(cv.sig.shape, cv.sig.rate) or gamma(cv.null.shape, cv.null.rate) for significant and null QTL, respectively, and multiplying the sampled cv by the absolute value of the simulated beta for that QTL in that state. 
+
+Here is an example of a simple simulation with half of the simulated QTL tests having globally significant effects. This example uses the default parameters.
+
+```{r basic-simulation}
+sim <- qtleSimulate(ntests=1000, nstates=6, global=0.5)
+sim
+```
+
+```{r basic-simulation-key}
+head(rowData(sim))
+```
+
+We can also generate more complex simulations, for example this simulation has 20% global, 40% multi-state, 20% unique, and 20% null QTL effects, where multi-state effects are assigned to one of two state-groups.
+
+```{r complex-simulation}
+sim <- qtleSimulate(nstates=10, nfeatures=100, ntests=1000,
+                    global=0.2, multi=0.4, unique=0.2, k=2)
+```
+
+Here is a snapshot of the simulation key for QTL simulated as unique to a single state: 
+
+```{r snapshot-unique}
+head(rowData(subset(sim, QTL == "unique")))
+```
+
+Here is a snapshot of the simulation key for QTL simulated as multi-state: 
+
+```{r snapshot-multistate}
+head(rowData(subset(sim, QTL == "multistate")))
+
+message("Number of QTL specific to each state-group:")
+table(rowData(subset(sim, QTL == "multistate"))$multistateGroup)
+```
+
+
+# 4. Dealing with missing data
+
+The multistateQTL toolkit provides two functions to help deal with missing data, `getComplete` and `replaceNAs`. The `getComplete` function is a smart subsetting function that remove QTL associations (rows) with more than an allowed amount of missing data. The `replaceNAs` function allows for NAs in each assay to be replaced with a constant or with the row mean or row median. For example, here is a snapshot of our simulated data from above with added NAs:  
+
+```{r add-NAs}
+na_pattern <- sample(seq(1, ncol(sim)*nrow(sim)), 1000)
+
+sim_na <- sim
+assay(sim_na, "betas")[na_pattern] <- NA
+assay(sim_na, "errors")[na_pattern] <- NA
+assay(sim_na, "lfsrs")[na_pattern] <- NA
+
+message("Number of simulated tests: ", nrow(sim_na))
+head(betas(sim_na))
+```
+
+First we can use `getComplete` to keep only the tests that have data for at least half of the states: 
+
+```{r remove-50p-missing}
+sim_na <- getComplete(sim_na, n=0.5, verbose=TRUE)
+```
+
+Then for the remaining QTL, we can fill in the missing values using the following scheme
+
+```{r fill-in-missing}
+sim_na <- replaceNAs(sim_na, verbose=TRUE)
+
+head(betas(sim_na))
+```
+
+
+# 5. Calling significance
+
+The multistateQTL toolkit also provides the `callSignificance` function, which calls QTL tests significant in each state using either a single or two-step threshold approach. For example, we can set a single lfsr threshold of 0.1 to call significance of our simulate QTL: 
+
+```{r simple-significance-calling}
+sim <- callSignificance(sim, assay="lfsrs", thresh=0.05)
+
+message("Median number of significant tests per state: ", 
+        median(colData(sim)$nSignificant))
+```
+
+Because we have the simulated ground-truth, we can compare these significance calls to what was simulated using the `simPerformance` function, which provides the following global (i.e. across all state) performance metrics:
+
+```{r simple-sig-calling-performance}
+sim <- callSignificance(sim, assay="lfsrs", thresh=0.001)
+perf_metrics <- simPerformance(sim)
+lapply(perf_metrics, FUN = function(x) {round(x, 2)})
+```
+
+As you can see the recall of TRUE significant QTL is quite low. However if we change our significance calling approach to be more flexible. 
+
+```{r state-by-state-double-thresholds}
+sim <- callSignificance(sim, mode="simple", assay="lfsrs",
+                            thresh=0.0001, second.thresh=0.0002)
+simPerformance(sim)$recall
+```
+
+
+# 4. Plotting global patterns of sharing
+
+## Pairwise sharing
+
+```{r pairwise-sharing}
+sim_sig <- getSignificant(sim)
+sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+sim_top <- runPairwiseSharing(sim_top)
+plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+```
+
+
+## Upset plots
+
+These plots show the set of tests that are significant, but not necessarily shared, by groups of states. 
+
+```{r upset-plot}
+plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+```
+
+
+
+# 5. Characterizing multi-state QTL patterns
+
+## Categorizing multi-state QTL tests
+
+Once multi-state test correction is performed, you will want to identify global, multi-state, and unique QTL. 
+
+```{r get-significant-simple}
+sim_top <- runTestMetrics(sim_top)
+
+
+plotCompareStates(sim_top, x="S01", y="S02")
+
+table(rowData(sim_top)$qtl_type)
+
+hist(rowData(sim_top)$nSignificant)
+```
+
+## Visualizing multi-state QTL
+
+```{r plot-multistate-QTL}
+sim_top_ms <- subset(sim_top, qtl_type_simple == "multistate")
+
+plotQTLClusters(sim_top_ms, annotate_states = c("multistateGroup"),
+                annotate_tests = c("qtl_type", "mean_beta", "QTL"))
+```
+
+
+
+# Session Info
+
+```{r session-info}
+sessionInfo()
+```
