@@ -70,10 +70,10 @@ plotSimulationParams(params, n = 1e+05)
 
 \item{slot}{Name of slot in metadata list with Pairwise Sharing matrix.}
 
-\item{annotate_rows}{character or array of characters specifying the 
+\item{annotate_rows}{character or array of characters specifying the
 column(s) in colData to be plotted as row annotations.}
 
-\item{annotate_cols}{character or array of characters specifying the 
+\item{annotate_cols}{character or array of characters specifying the
 column(s) in colData to be plotted as column annotations.}
 
 \item{cell_annotate}{Logical to annoate cells with their values.}
@@ -83,7 +83,7 @@ column(s) in colData to be plotted as column annotations.}
 \item{name}{character specifying the column in colData to use to label rows
 and columns. Default is colnames(qtle).}
 
-\item{dist.method}{Distance method used for hierarchical clustering. Valid 
+\item{dist.method}{Distance method used for hierarchical clustering. Valid
 values are the supported methods in dist() function.}
 
 \item{size}{numeric scalar giving default font size for plotting theme.}
@@ -98,7 +98,7 @@ values are the supported methods in dist() function.}
 
 \item{max_degree}{maximum degree of sharing for set to be included.}
 
-\item{annotate_by}{character or array of characters specifying the 
+\item{annotate_by}{character or array of characters specifying the
 column(s) in colData to be plotted as annotations.}
 
 \item{comb_order}{characters specifying how sets should be ordered. Options
@@ -108,15 +108,15 @@ include the set size (set_size), combination size (comb_size), degree (deg).}
 
 \item{fill_by}{name of assay to use for main heatmap object.}
 
-\item{FUN}{Function to be applied to fill_by assay before plotting (e.g. 
+\item{FUN}{Function to be applied to fill_by assay before plotting (e.g.
 identity, abs, log10).}
 
 \item{min_sig}{minimum number of significant states for QTL to be included.}
 
-\item{annotate_states}{character or array of characters specifying the 
+\item{annotate_states}{character or array of characters specifying the
 column(s) in colData to be plotted to annotate states.}
 
-\item{annotate_tests}{character or array of characters specifying the 
+\item{annotate_tests}{character or array of characters specifying the
 column(s) in rowData to be plotted to annotate QTL tests.}
 
 \item{show_row_names}{Logical to plot row (i.e. test) names.}
@@ -141,7 +141,7 @@ column(s) in rowData to be plotted to annotate QTL tests.}
 
 \item{col_both}{Color for tests significant in both states.}
 
-\item{col_diverging}{Color for tests significant in both states, with 
+\item{col_diverging}{Color for tests significant in both states, with
 diverging effect sizes.}
 
 \item{col_neither}{Color for null tests.}
@@ -161,7 +161,7 @@ Returns a \code{ComplexHeatmap} object.
 
 Returns a \code{ComplexHeatmap} object.
 
-Returns a list containing the counts for each color category 
+Returns a list containing the counts for each color category
         and the plot object.
 
 A ggplot2 object
@@ -170,12 +170,12 @@ A ggplot2 object
 Methods to plot at heatmap of the pairwise sharing of QTL as calculated
 by `runPairwiseSharing`.
 
-Convenient method to plot an UpSet plot showing the number of QTL that are 
+Convenient method to plot an UpSet plot showing the number of QTL that are
 significant in sets of states.
 
-Convenience method for plotting values from any assay specified by fill_by 
+Convenience method for plotting values from any assay specified by fill_by
 across states and tests.
 
-Convenience method for comparing the assay value, specified by assay, 
+Convenience method for comparing the assay value, specified by assay,
 between two states.
 }

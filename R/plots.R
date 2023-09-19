@@ -1,36 +1,36 @@
 #' @title Heatmap of pairwise QTL sharing with state-level annotations
 #'
-#' @description 
+#' @description
 #' Methods to plot at heatmap of the pairwise sharing of QTL as calculated
 #' by `runPairwiseSharing`.
-#' 
+#'
 #' @param object A \code{QTLExperiment} object
-#' @param slot Name of slot in metadata list with Pairwise Sharing matrix. 
-#' @param annotate_rows character or array of characters specifying the 
+#' @param slot Name of slot in metadata list with Pairwise Sharing matrix.
+#' @param annotate_rows character or array of characters specifying the
 #'        column(s) in colData to be plotted as row annotations.
-#' @param annotate_cols character or array of characters specifying the 
+#' @param annotate_cols character or array of characters specifying the
 #'        column(s) in colData to be plotted as column annotations.
 #' @param cell_annotate Logical to annoate cells with their values.
 #' @param col_range Optional range for the color legend
 #' @param name character specifying the column in colData to use to label rows
 #'        and columns. Default is colnames(qtle).
-#' @param dist.method Distance method used for hierarchical clustering. Valid 
+#' @param dist.method Distance method used for hierarchical clustering. Valid
 #'        values are the supported methods in dist() function.
 #' @param size numeric scalar giving default font size for plotting theme.
 #' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
 #'
-#' 
+#'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' @name plotPairwiseSharing
 #' @rdname plotting
-#' 
+#'
 #' @importFrom SummarizedExperiment colData
 #' @importFrom grid gpar
 #' @importFrom S4Vectors metadata
 #' @importFrom ComplexHeatmap Heatmap
 #' @importFrom grid grid.text
 #' @importFrom methods is
-#' 
+#'
 #' @export
 #'
 plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
@@ -48,15 +48,15 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
   }
 
   mat <- metadata(object)[[slot]]
-  
+
   if (all(mat == 0)) { stop("No pairwise sharing detected...")}
   if (any(is.na(mat))) { stop("NaNs in pairwise sharing results...")}
-  
+
   if(name != "colnames"){
     row.names(mat) <- colData(object)[, name]
     colnames(mat) <- colData(object)[, name]
   }
-  
+
   if(!is.null(col_range)){
     mat.cols <- .resolve_complexheatmap_colors(col_range)
   } else{
@@ -76,16 +76,16 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
     ann_cols <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
 
   }else {ann_cols <- NULL}
-  
+
   if(cell_annotate) {
     cell_annotate <- function(j, i, x, y, width, height, fill) {
-      grid.text(sprintf("%.2f", mat[i, j]), x, y, 
+      grid.text(sprintf("%.2f", mat[i, j]), x, y,
                 gp = gpar(fontsize = size-2))
-      } 
+      }
   } else{
     cell_annotate <- NULL
   }
-  
+
   Heatmap(mat, name = slot, col = mat.cols,
           clustering_distance_rows = dist.method,
           clustering_distance_columns = dist.method,
@@ -99,22 +99,22 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 
 #' @title Upset plot of QTL sharing between states with state-level annotations
 #'
-#' @description 
-#' Convenient method to plot an UpSet plot showing the number of QTL that are 
-#' significant in sets of states. 
-#' 
+#' @description
+#' Convenient method to plot an UpSet plot showing the number of QTL that are
+#' significant in sets of states.
+#'
 #' @param object an \code{QTLExperiment} object
 #' @param assay Name of assay to use to assess significance.
-#' @param min_shared minimum number of shared QTL for set to be included. 
+#' @param min_shared minimum number of shared QTL for set to be included.
 #' @param min_degree minimum degree of sharing for set to be included.
 #' @param max_degree maximum degree of sharing for set to be included.
-#' @param annotate_by character or array of characters specifying the 
+#' @param annotate_by character or array of characters specifying the
 #'        column(s) in colData to be plotted as annotations.
 #' @param name character specifying the column in colData to use to label rows
 #'        and columns. Default is colnames(qtle).
 #' @param comb_order characters specifying how sets should be ordered. Options
-#'        include the set size (set_size), combination size (comb_size), degree (deg). 
-#' @param set_order Array specifying order of states. 
+#'        include the set size (set_size), combination size (comb_size), degree (deg).
+#' @param set_order Array specifying order of states.
 #' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
@@ -122,8 +122,10 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' @rdname plotting
 #'
 #' @importFrom ComplexHeatmap make_comb_mat UpSet comb_size comb_degree set_size
-#' 
-plotUpSet <- function(object, 
+#'
+#' @export
+#'
+plotUpSet <- function(object,
                       assay = "significant",
                       name = "colnames",
                       min_shared=10,
@@ -136,7 +138,7 @@ plotUpSet <- function(object,
   if( ! assay %in% names(assays(object)) ) {
     stop("Run callSignificance() first...")
   }
-  
+
   sigMatrix <- as.matrix(assay(object, assay))
   sigMatrix <- sigMatrix[(rowSums(sigMatrix[ , ]) != 0), ]
   if(name != "colnames"){
@@ -180,34 +182,34 @@ plotUpSet <- function(object,
 
 #' @title Heatmap of QTL across states
 #'
-#' @description 
-#' Convenience method for plotting values from any assay specified by fill_by 
-#' across states and tests. 
-#' 
-#' 
+#' @description
+#' Convenience method for plotting values from any assay specified by fill_by
+#' across states and tests.
+#'
+#'
 #' @param object an \code{QTLExperiment} object.
 #' @param fill_by name of assay to use for main heatmap object.
-#' @param FUN Function to be applied to fill_by assay before plotting (e.g. 
+#' @param FUN Function to be applied to fill_by assay before plotting (e.g.
 #'            identity, abs, log10).
 #' @param min_sig minimum number of significant states for QTL to be included.
-#' @param annotate_states character or array of characters specifying the 
+#' @param annotate_states character or array of characters specifying the
 #'        column(s) in colData to be plotted to annotate states.
-#' @param annotate_tests character or array of characters specifying the 
+#' @param annotate_tests character or array of characters specifying the
 #'        column(s) in rowData to be plotted to annotate QTL tests.
 #' @param state_id colData column to use to label states.
 #' @param column_order Null for clustering or array to overwrite state order
 #' @param row_order Null for clustering or array to overwrite test order
 #' @param show_row_names Logical to plot row (i.e. test) names.
-#' @param row_km Set k for k-means clustering of tests. 
+#' @param row_km Set k for k-means clustering of tests.
 #' @param col_km Set k for k-means clustering of states
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' @name plotQTLClusters
 #' @rdname plotting
-#' 
+#'
 #' @importFrom ComplexHeatmap Heatmap
 #' @importFrom methods is
-#' 
+#'
 #' @export
 #'
 plotQTLClusters <- function(object,
@@ -235,11 +237,11 @@ plotQTLClusters <- function(object,
   if(fill_by %in% c("p", "pvalues", "lfsrs")){
     mat <- -log10(mat)
   }
-  
+
   if(state_id != "state_id"){
     colnames(mat) <- colData(object)[, state_id]
   }
-  
+
   mat.cols <- .resolve_complexheatmap_colors(array(mat))
 
   if(!is.null(annotate_states)){
@@ -247,7 +249,7 @@ plotQTLClusters <- function(object,
       anns <- as.data.frame(colData(object)[, annotate_states])
       colnames(anns) <- annotate_states
       ann_state <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
-    } else{ 
+    } else{
       ann_state <- annotate_states }
   }else {ann_state <- NULL}
 
@@ -261,10 +263,10 @@ plotQTLClusters <- function(object,
 
   if(is.null(row_order)){row_order <- row.names(mat)}
   if(is.null(column_order)){column_order <- names(mat)}
-  
-  Heatmap(mat, name = fill_by, col = mat.cols, 
+
+  Heatmap(mat, name = fill_by, col = mat.cols,
           show_row_names = show_row_names,
-          top_annotation = ann_state, 
+          top_annotation = ann_state,
           row_km = row_km, column_km = col_km,
           right_annotation = ann_tests)
 }
@@ -273,33 +275,33 @@ plotQTLClusters <- function(object,
 
 #' @title Compare QTL between two states
 #'
-#' @description 
-#' Convenience method for comparing the assay value, specified by assay, 
-#' between two states. 
-#' 
+#' @description
+#' Convenience method for comparing the assay value, specified by assay,
+#' between two states.
+#'
 #' @param object an \code{QTLExperiment} object.
 #' @param x Name of state for x-axis
 #' @param y Name of state for y-axis
 #' @param assay name of assay to plot.
 #' @param significance_assay name of assay with TRUE/FALSE significance calls.
-#' @param FUN Function to be applied to fill_by assay before plotting (e.g. 
+#' @param FUN Function to be applied to fill_by assay before plotting (e.g.
 #'            identity, abs, log10).
 #' @param alpha Transparency.
 #' @param col_both Color for tests significant in both states.
-#' @param col_diverging Color for tests significant in both states, with 
+#' @param col_diverging Color for tests significant in both states, with
 #'        diverging effect sizes.
 #' @param col_neither Color for null tests.
 #' @param col_x Color for tests significant in the x-axis state only.
 #' @param col_y Color for tests significant in the y-axis state only.
-#' 
-#' @return Returns a list containing the counts for each color category 
+#'
+#' @return Returns a list containing the counts for each color category
 #'         and the plot object.
 #'
 #' @name plotCompareStates
 #' @rdname plotting
 
 #' @importFrom ggplot2 geom_abline geom_point aes .data xlim ylim
-#' 
+#'
 #' @export
 
 plotCompareStates <- function(object, x, y,
@@ -311,23 +313,23 @@ plotCompareStates <- function(object, x, y,
                               col_neither="gray50",
                               col_x="#CCBB44",
                               col_y="#AA3377") {
-  
+
   if( ! significance_assay %in% names(assays(object)) ) {
-    stop("Run callSignificance() or specify assay name that contains logical 
+    stop("Run callSignificance() or specify assay name that contains logical
          significance calls.")
   }
-  
+
   object <- object[, c(x, y)]
-  
+
   object <- runTestMetrics(object)
-  
+
   to_plot <- FUN(as.data.frame(assay(object, assay)))
   to_plot[, "qtl_type"] <- rowData(object)[["qtl_type"]]
   to_plot$name <- rownames(to_plot)
   diverging <- row.names(to_plot[grepl("_diverging", to_plot[["qtl_type"]]), ])
-  
-  cols <- list(both_shared=col_both, 
-               both_diverging = col_diverging, 
+
+  cols <- list(both_shared=col_both,
+               both_diverging = col_diverging,
                not_sig=col_neither)
   cols[[x]] <- col_x
   cols[[y]] <- col_y
@@ -335,51 +337,51 @@ plotCompareStates <- function(object, x, y,
   min_val <- min(c(to_plot[[x]], to_plot[[y]]))
   max_val <- max(c(to_plot[[x]], to_plot[[y]]))
 
-  plot <- ggplot(to_plot, aes(x = .data[[x]], y = .data[[y]], color=qtl_type)) + 
+  plot <- ggplot(to_plot, aes(x = .data[[x]], y = .data[[y]], color=qtl_type)) +
     geom_point(size = 1, alpha=alpha) +
-    scale_color_manual(values=cols, na.value = "#000000") + 
+    scale_color_manual(values=cols, na.value = "#000000") +
     xlim(c(min_val, max_val)) + ylim(c(min_val, max_val)) +
-    geom_abline(linetype = "dashed", slope = 1) 
-  
+    geom_abline(linetype = "dashed", slope = 1)
+
   counts <- table(to_plot[, "qtl_type"])
-  
+
   return(list(plot=plot, counts=counts))
- 
+
 }
 
 
 #' @title Distribution of estimated simulation parameters
-#' 
+#'
 #' @param params Estimated simulation parameters from qtleEstimate.
 #' @param n Number of random values to sample for plots.
-#' 
+#'
 #' @return A ggplot2 object
-#' 
+#'
 #' @name plotSimulationParams
 #' @rdname plotting
-#' 
+#'
 #' @importFrom ggplot2 ggplot geom_density facet_grid theme_classic aes
 #' @importFrom stats rgamma
 #' @export
-#' 
+#'
 plotSimulationParams <- function(params, n=1e5){
-  
+
   demo_data <- as.data.frame(list(statistic=c(rep("beta", n*2), rep("CV", n*2)),
-                                  qtl_type=rep(c(rep("significant", n), 
+                                  qtl_type=rep(c(rep("significant", n),
                                              rep("not significant", n)), 2),
-                                  value=c(rgamma(n, params$betas.sig.shape, 
+                                  value=c(rgamma(n, params$betas.sig.shape,
                                                   params$betas.sig.rate),
-                                           rgamma(n, params$betas.null.shape, 
+                                           rgamma(n, params$betas.null.shape,
                                                   params$betas.null.rate),
-                                           rgamma(n, params$cv.sig.shape, 
+                                           rgamma(n, params$cv.sig.shape,
                                                   params$cv.sig.rate),
-                                           rgamma(n, params$cv.null.shape, 
+                                           rgamma(n, params$cv.null.shape,
                                                   params$cv.null.rate))))
-  
+
   ggplot(demo_data, aes(x=value, fill=qtl_type, color=qtl_type)) +
-    geom_density(alpha=0.2) + 
-    facet_grid(.~statistic, scales="free") + 
+    geom_density(alpha=0.2) +
+    facet_grid(.~statistic, scales="free") +
     theme_classic()
-  
+
 }
 
