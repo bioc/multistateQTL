@@ -16,7 +16,7 @@ This package in stable but undergoing active development and currently only live
 
 ```
 install.packages("devtools")
-devtools::install_git("https://gitlab.svi.edu.au/biocellgen-public/multistateqtle.git", build_vignettes = TRUE)
+devtools::install_git("https://gitlab.svi.edu.au/biocellgen-public/multistateQTL", build_vignettes = TRUE)
 ```
 
 We plan to submit QTLExperiment and multistateQTL to Bioconductor in the near future. Using the most recent version of R is strongly recommended (R 4.2.1 at the time of writing). 
@@ -40,8 +40,9 @@ install.packages(c("knitr", "dplyr", "collapse", "ggplot2", "circlize", "vroom",
 ### Bioconductor 
 
 ```{r load-bioc}
-source("http://bioconductor.org/biocLite.R")
-biocLite(c("SummarizedExperiment", "BiocGenerics", "S4Vectors", "ComplexHeatmap"))
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install(c("SummarizedExperiment", "BiocGenerics", "S4Vectors", "ComplexHeatmap"))
 ```
 
 

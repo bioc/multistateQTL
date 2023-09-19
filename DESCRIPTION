@@ -37,4 +37,4 @@ Suggests:
     rmarkdown
 Remotes: git::https://gitlab.svi.edu.au/cazodi/qtlexperiment
 VignetteBuilder: knitr
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
