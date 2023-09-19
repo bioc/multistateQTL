@@ -8,7 +8,7 @@ Authors@R: c(person("Christina", "Del Azodi", role=c("aut", "cre"),
 Maintainer: Davis McCarthy <dmccarthy@svi.edu.au>
 Description: A collection of tools for doing various analyses of
         multi-state QTL data, with a focus on visualization and interpretation.
-License: GPL (>= 2)
+License: GPL (>= 2) + file LICENSE
 Encoding: UTF-8
 Depends: 
     QTLExperiment,
