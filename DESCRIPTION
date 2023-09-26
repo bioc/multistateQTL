@@ -1,11 +1,11 @@
-Package: multiStateQTL
+Package: multistateQTL
 Type: Package
 Date: 2021-10-18
 Title: Toolkit for the analysis of multi-state QTL data
 Version: 0.1.0
 Authors@R: c(
     person("Christina", "Del Azodi", role=c("aut"), email="cazodi@svi.edu.au"), 
-    person("Davis","McCarthy", role=c("cre", "ctb"), email="dmccarthy@svi.edu.au"),
+    person("Davis","McCarthy", role=c("ctb"), email="dmccarthy@svi.edu.au"),
     person("Amelia","Dunstone", role=c("cre", "ctb"), email="amelia.dunstone@svi.edu.au"))
 Description: A collection of tools for doing various analyses of
     multi-state QTL data, with a focus on visualization and interpretation.
