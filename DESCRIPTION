@@ -43,4 +43,4 @@ Suggests:
 Remotes: git::https://gitlab.svi.edu.au/cazodi/qtlexperiment
 biocViews: FunctionalGenomics, GeneExpression, Sequencing, Visualization, SNP, Software
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
