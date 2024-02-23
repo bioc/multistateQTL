@@ -3,7 +3,7 @@ title: "multistateQTL: Orchestrating multi-state QTL analysis in R"
 author:
   - "Christina B Azodi"
   - "Davis McCarthy"
-package: multiStateQTL
+package: multistateQTL
 date: "`r Sys.Date()`"
 output:
     BiocStyle::html_document:
@@ -18,26 +18,25 @@ vignette: >
 ```{r knitr-options, echo = FALSE}
 set.seed(42)
 knitr::opts_chunk$set(warning=FALSE, error=FALSE, message=FALSE, 
-                      fig.height = 6, fig.width = 8)
+                      fig.height=6, fig.width=8)
 ```
 
 # Introduction
 
-`multiStateQTL` is a Bioconductor package for applying basic statistical tests (e.g., feature-wise FDR correction, calculating pairwise sharing), summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class, where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics. It also provides wrapper implementations of a number of multi-test correction methods (e.g., [mashr](https://github.com/stephenslab/mashr), [meta-soft](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3146723/), etc), which result in a set of multi-test corrected summary statistics. 
+`multistateQTL` is a Bioconductor package for applying basic statistical tests (e.g., feature-wise FDR correction, calculating pairwise sharing), summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class, where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics. It also provides wrapper implementations of a number of multi-test correction methods (e.g., [mashr](https://github.com/stephenslab/mashr), [meta-soft](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3146723/), etc), which result in a set of multi-test corrected summary statistics. 
 
 ## Installation
 
 QTLExperiment and multistateQTL can be installed from GitLab:
 
 ```
-install.packages("devtools", repos = "http://cran.us.r-project.org")
-devtools::install_git("https://gitlab.svi.edu.au/cazodi/qtlexperiment.git", build_vignettes = TRUE)
+devtools::install_git("https://github.com/dunstone-a/QTLExperiment", build_vignettes = TRUE)
 devtools::install_git("https://gitlab.svi.edu.au/cazodi/multistateqtl.git", build_vignettes = TRUE)
 ```
 
 ```{r}
 library(QTLExperiment)
-library(multiStateQTL)
+library(multistateQTL)
 ```
 
 # 2. Simulating data
@@ -56,30 +55,24 @@ The parameters estimated here include:
 - **Null beta cv shape and rate:** Define the gamma distribution used to sample the cv for each QTL in each state where that QTL is not significant. This cv is then multiplied by the simulated null effect size for that test/state to get the simulated stand error values.
 
 
-```{r load-gtex-data-from-ftp}
-# CSV file containing metadata for all uniformly processed datasets
-# from the EBI eQTL database
-ebi <- read.csv("https://raw.githubusercontent.com/eQTL-Catalogue/eQTL-Catalogue-resources/master/data_tables/dataset_metadata.tsv", sep = "\t")
+```{r demo-sumstats2qtle}
+input_path <- system.file("extdata", package="multistateQTL")
+state <- c("lung", "thyroid", "spleen", "blood")
 
-ftp <- "http://ftp.ebi.ac.uk/pub/databases/spot/eQTL/sumstats"
+input <- data.frame(
+    state=state, 
+    path=paste0(input_path, "/GTEx_tx_", state, ".tsv"))
 
-# Filter to select the tissue and make url's
-ebi <- ebi |>
-  dplyr::filter(study_label == "GTEx") |>
-  dplyr::filter(tissue_label %in% c("lung", "thyroid", "spleen", "blood")) |>
-  dplyr::filter(quant_method == "tx") |> 
-  dplyr::mutate(url = paste(ftp, study_id, dataset_id, dataset_id, sep = "/")) |>
-  dplyr::mutate(url = paste0(url, ".cc.tsv.gz"))
-
-input_web <- as.list(setNames(ebi$url, ebi$tissue_label))
-
-gtex <- sumstats2qtle(input_web, 
-                      feature_id = "molecular_trait_id",
-                      variant_id = "rsid", 
-                      betas = "beta",
-                      errors = "se",
-                      pvalues = "pvalue")
+gtex <- sumstats2qtle(
+    input, 
+    feature_id="molecular_trait_id",
+    variant_id="rsid", 
+    betas="beta", 
+    errors="se",
+    pvalues="pvalue", 
+    verbose=TRUE)
 gtex
+head(betas(gtex))
 ```
 
 Estimating parameters: 
@@ -121,6 +114,7 @@ We can also generate more complex simulations, for example this simulation has 2
 sim <- qtleSimulate(nstates=10, nfeatures=100, ntests=1000,
                     global=0.2, multi=0.4, unique=0.2, k=2)
 ```
+
 
 Here is a snapshot of the simulation key for QTL simulated as unique to a single state: 
 
@@ -192,7 +186,7 @@ As you can see the recall of TRUE significant QTL is quite low. However if we ch
 
 ```{r state-by-state-double-thresholds}
 sim <- callSignificance(sim, mode="simple", assay="lfsrs",
-                            thresh=0.0001, second.thresh=0.0002)
+                        thresh=0.0001, second.thresh=0.0002)
 simPerformance(sim)$recall
 ```
 
