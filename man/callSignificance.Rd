@@ -55,15 +55,15 @@ callSignificance(object, ...) <- value
 \item{p.adjust.method}{Method of multiple-test correction if mode != simple}
 }
 \value{
-A `QTLExperiment` object with a new assay called `significant` and with 
+A `QTLExperiment` object with a new assay called `significant` and with
 a column called nSignificant added to the colData.
 }
 \description{
 Call associations as significant in each state.
 }
 \details{
-This function adds a new assay to multistateQTL object with TRUE/FALSE 
-significance calls for each test for each state. Significance
+This function adds a new assay to multistateQTL object with TRUE/FALSE
+significance calls for each test for each state.
 }
 \examples{
 

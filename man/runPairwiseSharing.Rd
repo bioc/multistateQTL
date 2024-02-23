@@ -17,7 +17,7 @@ runPairwiseSharing(
 \arguments{
 \item{qtle}{A `QTLExperiment` object.}
 
-\item{assay}{The assay containing the metric used to determine sharing (i.e. 
+\item{assay}{The assay containing the metric used to determine sharing (i.e.
 the metric to be within a factor X to be considered shared).}
 
 \item{assay_sig}{The assay containing significance information.}
@@ -25,7 +25,7 @@ the metric to be within a factor X to be considered shared).}
 \item{factor}{a number in [0,1] the factor within which effects are
 considered to be shared}
 
-\item{FUN}{a function to be applied to the estimated effect sizes before 
+\item{FUN}{a function to be applied to the estimated effect sizes before
 assessing sharing. Default 'FUN=identity', 'FUN=abs' ignores
 the sign of the effects when assessing sharing.}
 
@@ -40,9 +40,9 @@ Compute the proportion of (significant) QTL shared by pairs of
 conditions
 }
 \details{
-For each pair of states, the effects that are significant 
-(as determined by `callSignificance`) in at least one of the two states are 
-identified. Then the fraction of those with an estimated effect size 
+For each pair of states, the effects that are significant
+(as determined by `callSignificance`) in at least one of the two states are
+identified. Then the fraction of those with an estimated effect size
 (i.e. betas) within a factor `factor` of one another is computed and
 returned.
 }

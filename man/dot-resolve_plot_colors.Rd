@@ -13,7 +13,7 @@
 
 \item{color_by_name}{name of color_by array}
 
-\item{fill}{Logical indicating if the palette is for fill or color (e.g. 
+\item{fill}{Logical indicating if the palette is for fill or color (e.g.
 scale_fill_brewer vs scale_color_brewer).}
 }
 \description{

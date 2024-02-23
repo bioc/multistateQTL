@@ -22,7 +22,7 @@ getTopHits(
 
 \item{verbose}{logical. Whether to print progress messages.}
 
-\item{mode}{global/state to specify if the top hit per feature is desired 
+\item{mode}{global/state to specify if the top hit per feature is desired
 from across all states or for each state.}
 
 \item{assay}{The assay containing the test statistic to minimize.}
@@ -35,14 +35,14 @@ a subset of the `QTLExperiment` object, with only tests with fewer
 NAs than specified by n.
 
 a subset of the `QTLExperiment` object, with only tests that are the
-top hits for each feature (`mode=global`) or for each feature for each 
+top hits for each feature (`mode=global`) or for each feature for each
 state (`mode=state`).
 }
 \description{
-Method to filter \linkS4class{QTLExperiment} objects to remove tests with 
+Method to filter \linkS4class{QTLExperiment} objects to remove tests with
 greater than the permitted rate of missing values.
 
 Method to return a subset of a \linkS4class{QTLExperiment} object containing
-only the tests that are top hits. Top hits are defined as the test for each 
+only the tests that are top hits. Top hits are defined as the test for each
 feature with the  an array of the top QTL for each feature across all states
 }

@@ -14,12 +14,12 @@ replaceNAs(
 \item{object}{A `QTLExperiment` object}
 
 \item{methods}{A named list with the method for each assay. Available methods
-are to replace with a given integer or with the row mean or 
+are to replace with a given integer or with the row mean or
 median.}
 
 \item{verbose}{logical. Whether to print progress messages.}
 }
 \description{
-A convenience function for imputing or filling in NAs in a `QTLExperiment` 
+A convenience function for imputing or filling in NAs in a `QTLExperiment`
 object.
 }

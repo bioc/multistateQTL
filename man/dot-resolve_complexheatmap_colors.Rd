@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_helper_functions.R
 \name{.resolve_complexheatmap_colors}
 \alias{.resolve_complexheatmap_colors}
-\title{Color palettes for ComplexHeatmaps and their annotations. If more than 8 
+\title{Color palettes for ComplexHeatmaps and their annotations. If more than 8
 continuous or 4 qualitative palettes are requested they will start repeating.}
 \usage{
 .resolve_complexheatmap_colors(color_by, i = 1)
@@ -13,6 +13,6 @@ continuous or 4 qualitative palettes are requested they will start repeating.}
 \item{i}{index of color scheme to select}
 }
 \description{
-Color palettes for ComplexHeatmaps and their annotations. If more than 8 
+Color palettes for ComplexHeatmaps and their annotations. If more than 8
 continuous or 4 qualitative palettes are requested they will start repeating.
 }
