@@ -40,59 +40,59 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
                                 dist.method = "pearson",
                                 size = 8, ...) {
 
-  if ( !is(object, "QTLExperiment") )
-    stop("Object must be a QTLExperiment")
+    if ( !is(object, "QTLExperiment") )
+        stop("Object must be a QTLExperiment")
 
-  if (!(slot %in% names(metadata(object)))) {
-    stop("Run runPairwiseSharing or provide metadata slot with data to plot.")
-  }
+    if (!(slot %in% names(metadata(object)))) {
+        stop("Run runPairwiseSharing or provide metadata slot with data to plot.")
+    }
 
-  mat <- metadata(object)[[slot]]
+    mat <- metadata(object)[[slot]]
 
-  if (all(mat == 0)) { stop("No pairwise sharing detected...")}
-  if (any(is.na(mat))) { stop("NaNs in pairwise sharing results...")}
+    if (all(mat == 0)) { stop("No pairwise sharing detected...")}
+    if (any(is.na(mat))) { stop("NaNs in pairwise sharing results...")}
 
-  if(name != "colnames"){
-    row.names(mat) <- colData(object)[, name]
-    colnames(mat) <- colData(object)[, name]
-  }
+    if(name != "colnames"){
+        row.names(mat) <- colData(object)[, name]
+        colnames(mat) <- colData(object)[, name]
+    }
 
-  if(!is.null(col_range)){
-    mat.cols <- .resolve_complexheatmap_colors(col_range)
-  } else{
-    mat.cols <- .resolve_complexheatmap_colors(array(mat))
-  }
+    if(!is.null(col_range)){
+        mat.cols <- .resolve_complexheatmap_colors(col_range)
+    } else{
+        mat.cols <- .resolve_complexheatmap_colors(array(mat))
+    }
 
-  if(!is.null(annotate_rows)){
-    anns <- as.data.frame(colData(object)[, annotate_rows])
-    colnames(anns) <- annotate_rows
-    ann_rows <- .resolve_annotations(anns)
+    if(!is.null(annotate_rows)){
+        anns <- as.data.frame(colData(object)[, annotate_rows])
+        colnames(anns) <- annotate_rows
+        ann_rows <- .resolve_annotations(anns)
 
-  }else {ann_rows <- NULL}
+    }else {ann_rows <- NULL}
 
-  if(!is.null(annotate_cols)){
-    anns <- as.data.frame(colData(object)[, annotate_cols])
-    colnames(anns) <- annotate_cols
-    ann_cols <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
+    if(!is.null(annotate_cols)){
+        anns <- as.data.frame(colData(object)[, annotate_cols])
+        colnames(anns) <- annotate_cols
+        ann_cols <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
 
-  }else {ann_cols <- NULL}
+    }else {ann_cols <- NULL}
 
-  if(cell_annotate) {
-    cell_annotate <- function(j, i, x, y, width, height, fill) {
-      grid.text(sprintf("%.2f", mat[i, j]), x, y,
-                gp = gpar(fontsize = size-2))
-      }
-  } else{
-    cell_annotate <- NULL
-  }
+    if(cell_annotate) {
+        cell_annotate <- function(j, i, x, y, width, height, fill) {
+            grid.text(sprintf("%.2f", mat[i, j]), x, y,
+                      gp = gpar(fontsize = size-2))
+        }
+    } else{
+        cell_annotate <- NULL
+    }
 
-  Heatmap(mat, name = slot, col = mat.cols,
-          clustering_distance_rows = dist.method,
-          clustering_distance_columns = dist.method,
-          top_annotation = ann_cols, right_annotation = ann_rows,
-          cell_fun = cell_annotate,
-          column_names_gp = gpar(fontsize = size),
-          row_names_gp = gpar(fontsize = size))
+    Heatmap(mat, name = slot, col = mat.cols,
+            clustering_distance_rows = dist.method,
+            clustering_distance_columns = dist.method,
+            top_annotation = ann_cols, right_annotation = ann_rows,
+            cell_fun = cell_annotate,
+            column_names_gp = gpar(fontsize = size),
+            row_names_gp = gpar(fontsize = size))
 
 }
 
@@ -135,47 +135,47 @@ plotUpSet <- function(object,
                       comb_order="comb_size",
                       set_order = order(ss)){
 
-  if( ! assay %in% names(assays(object)) ) {
-    stop("Run callSignificance() first...")
-  }
+    if( ! assay %in% names(assays(object)) ) {
+        stop("Run callSignificance() first...")
+    }
 
-  sigMatrix <- as.matrix(assay(object, assay))
-  sigMatrix <- sigMatrix[(rowSums(sigMatrix[ , ]) != 0), ]
-  if(name != "colnames"){
-    colnames(sigMatrix) <- colData(object)[, name]
-  }
+    sigMatrix <- as.matrix(assay(object, assay))
+    sigMatrix <- sigMatrix[(rowSums(sigMatrix[ , ]) != 0), ]
+    if(name != "colnames"){
+        colnames(sigMatrix) <- colData(object)[, name]
+    }
 
-  combMatrix <- make_comb_mat(sigMatrix)
-  combMatrix <- combMatrix[comb_size(combMatrix) >= min_shared]
-  combMatrix <- combMatrix[comb_degree(combMatrix) >= min_degree]
+    combMatrix <- make_comb_mat(sigMatrix)
+    combMatrix <- combMatrix[comb_size(combMatrix) >= min_shared]
+    combMatrix <- combMatrix[comb_degree(combMatrix) >= min_degree]
 
-  if(!is.null(max_degree)){
-    combMatrix <- combMatrix[comb_degree(combMatrix) <= max_degree]
-  }
+    if(!is.null(max_degree)){
+        combMatrix <- combMatrix[comb_degree(combMatrix) <= max_degree]
+    }
 
-  if(!is.null(annotate_by)){
-    if(!is(annotate_by, "HeatmapAnnotation")){
-      anns <- as.data.frame(colData(object)[, annotate_by])
-      colnames(anns) <- annotate_by
-      rowAnns <- .resolve_annotations(anns, FUN=rowAnnotation)
-    } else{ rowAnns <- annotate_by}
-  }else {rowAnns <- NULL}
+    if(!is.null(annotate_by)){
+        if(!is(annotate_by, "HeatmapAnnotation")){
+            anns <- as.data.frame(colData(object)[, annotate_by])
+            colnames(anns) <- annotate_by
+            rowAnns <- .resolve_annotations(anns, FUN=rowAnnotation)
+        } else{ rowAnns <- annotate_by}
+    }else {rowAnns <- NULL}
 
-  ss <- -set_size(combMatrix)
+    ss <- -set_size(combMatrix)
 
-  if (!is.null(comb_order) & comb_order != "set_size") {
-    cs <- comb_size(combMatrix)
-    cd <- comb_degree(combMatrix)
-    if(comb_order == "comb_size") {
-      comb_order <- order(-cs)
-    } else if (comb_order == "comb_degree") {
-      comb_order <- order(cd, -cs)
-    } else { comb_order <- order(cd) }
-  }
+    if (!is.null(comb_order) & comb_order != "set_size") {
+        cs <- comb_size(combMatrix)
+        cd <- comb_degree(combMatrix)
+        if(comb_order == "comb_size") {
+            comb_order <- order(-cs)
+        } else if (comb_order == "comb_degree") {
+            comb_order <- order(cd, -cs)
+        } else { comb_order <- order(cd) }
+    }
 
 
-  UpSet(combMatrix, set_order = set_order,
-        comb_order = comb_order) + rowAnns
+    UpSet(combMatrix, set_order = set_order,
+          comb_order = comb_order) + rowAnns
 
 }
 
@@ -225,50 +225,50 @@ plotQTLClusters <- function(object,
                             row_km = 0,
                             col_km = 0) {
 
-  if (!is(object, "QTLExperiment")) {
-    stop("Object must be a QTLExperiment")
-  }
+    if (!is(object, "QTLExperiment")) {
+        stop("Object must be a QTLExperiment")
+    }
 
-  if ( !(fill_by %in% names(assays(object)))) {
-    stop("Specify which assay to fill and cluster by")
-  }
+    if ( !(fill_by %in% names(assays(object)))) {
+        stop("Specify which assay to fill and cluster by")
+    }
 
-  mat <- FUN(as.matrix(assays(object)[[fill_by]]))
-  if(fill_by %in% c("p", "pvalues", "lfsrs")){
-    mat <- -log10(mat)
-  }
+    mat <- FUN(as.matrix(assays(object)[[fill_by]]))
+    if(fill_by %in% c("p", "pvalues", "lfsrs")){
+        mat <- -log10(mat)
+    }
 
-  if(state_id != "state_id"){
-    colnames(mat) <- colData(object)[, state_id]
-  }
+    if(state_id != "state_id"){
+        colnames(mat) <- colData(object)[, state_id]
+    }
 
-  mat.cols <- .resolve_complexheatmap_colors(array(mat))
+    mat.cols <- .resolve_complexheatmap_colors(array(mat))
 
-  if(!is.null(annotate_states)){
-    if(!is(annotate_states, "HeatmapAnnotation")){
-      anns <- as.data.frame(colData(object)[, annotate_states])
-      colnames(anns) <- annotate_states
-      ann_state <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
-    } else{
-      ann_state <- annotate_states }
-  }else {ann_state <- NULL}
+    if(!is.null(annotate_states)){
+        if(!is(annotate_states, "HeatmapAnnotation")){
+            anns <- as.data.frame(colData(object)[, annotate_states])
+            colnames(anns) <- annotate_states
+            ann_state <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
+        } else{
+            ann_state <- annotate_states }
+    }else {ann_state <- NULL}
 
-  if(!is.null(annotate_tests)){
-    if(!is(annotate_states, "HeatmapAnnotation")){
-      anns <- as.data.frame(rowData(object)[, annotate_tests])
-      colnames(anns) <- annotate_tests
-      ann_tests <- .resolve_annotations(anns)
-    } else{ann_tests <- annotate_tests}
-  }else {ann_tests <- NULL}
+    if(!is.null(annotate_tests)){
+        if(!is(annotate_states, "HeatmapAnnotation")){
+            anns <- as.data.frame(rowData(object)[, annotate_tests])
+            colnames(anns) <- annotate_tests
+            ann_tests <- .resolve_annotations(anns)
+        } else{ann_tests <- annotate_tests}
+    }else {ann_tests <- NULL}
 
-  if(is.null(row_order)){row_order <- row.names(mat)}
-  if(is.null(column_order)){column_order <- names(mat)}
+    if(is.null(row_order)){row_order <- row.names(mat)}
+    if(is.null(column_order)){column_order <- names(mat)}
 
-  Heatmap(mat, name = fill_by, col = mat.cols,
-          show_row_names = show_row_names,
-          top_annotation = ann_state,
-          row_km = row_km, column_km = col_km,
-          right_annotation = ann_tests)
+    Heatmap(mat, name = fill_by, col = mat.cols,
+            show_row_names = show_row_names,
+            top_annotation = ann_state,
+            row_km = row_km, column_km = col_km,
+            right_annotation = ann_tests)
 }
 
 
@@ -314,38 +314,38 @@ plotCompareStates <- function(object, x, y,
                               col_x="#CCBB44",
                               col_y="#AA3377") {
 
-  if( ! significance_assay %in% names(assays(object)) ) {
-    stop("Run callSignificance() or specify assay name that contains logical
+    if( ! significance_assay %in% names(assays(object)) ) {
+        stop("Run callSignificance() or specify assay name that contains logical
          significance calls.")
-  }
+    }
 
-  object <- object[, c(x, y)]
+    object <- object[, c(x, y)]
 
-  object <- runTestMetrics(object)
+    object <- runTestMetrics(object)
 
-  to_plot <- FUN(as.data.frame(assay(object, assay)))
-  to_plot[, "qtl_type"] <- rowData(object)[["qtl_type"]]
-  to_plot$name <- rownames(to_plot)
-  diverging <- row.names(to_plot[grepl("_diverging", to_plot[["qtl_type"]]), ])
+    to_plot <- FUN(as.data.frame(assay(object, assay)))
+    to_plot[, "qtl_type"] <- rowData(object)[["qtl_type"]]
+    to_plot$name <- rownames(to_plot)
+    diverging <- row.names(to_plot[grepl("_diverging", to_plot[["qtl_type"]]), ])
 
-  cols <- list(both_shared=col_both,
-               both_diverging = col_diverging,
-               not_sig=col_neither)
-  cols[[x]] <- col_x
-  cols[[y]] <- col_y
+    cols <- list(both_shared=col_both,
+                 both_diverging = col_diverging,
+                 not_sig=col_neither)
+    cols[[x]] <- col_x
+    cols[[y]] <- col_y
 
-  min_val <- min(c(to_plot[[x]], to_plot[[y]]))
-  max_val <- max(c(to_plot[[x]], to_plot[[y]]))
+    min_val <- min(c(to_plot[[x]], to_plot[[y]]))
+    max_val <- max(c(to_plot[[x]], to_plot[[y]]))
 
-  plot <- ggplot(to_plot, aes(x = .data[[x]], y = .data[[y]], color=qtl_type)) +
-    geom_point(size = 1, alpha=alpha) +
-    scale_color_manual(values=cols, na.value = "#000000") +
-    xlim(c(min_val, max_val)) + ylim(c(min_val, max_val)) +
-    geom_abline(linetype = "dashed", slope = 1)
+    plot <- ggplot(to_plot, aes(x = .data[[x]], y = .data[[y]], color=qtl_type)) +
+        geom_point(size = 1, alpha=alpha) +
+        scale_color_manual(values=cols, na.value = "#000000") +
+        xlim(c(min_val, max_val)) + ylim(c(min_val, max_val)) +
+        geom_abline(linetype = "dashed", slope = 1)
 
-  counts <- table(to_plot[, "qtl_type"])
+    counts <- table(to_plot[, "qtl_type"])
 
-  return(list(plot=plot, counts=counts))
+    return(list(plot=plot, counts=counts))
 
 }
 
@@ -366,22 +366,22 @@ plotCompareStates <- function(object, x, y,
 #'
 plotSimulationParams <- function(params, n=1e5){
 
-  demo_data <- as.data.frame(list(statistic=c(rep("beta", n*2), rep("CV", n*2)),
-                                  qtl_type=rep(c(rep("significant", n),
-                                             rep("not significant", n)), 2),
-                                  value=c(rgamma(n, params$betas.sig.shape,
-                                                  params$betas.sig.rate),
-                                           rgamma(n, params$betas.null.shape,
-                                                  params$betas.null.rate),
-                                           rgamma(n, params$cv.sig.shape,
-                                                  params$cv.sig.rate),
-                                           rgamma(n, params$cv.null.shape,
-                                                  params$cv.null.rate))))
+    demo_data <- as.data.frame(list(statistic=c(rep("beta", n*2), rep("CV", n*2)),
+                                    qtl_type=rep(c(rep("significant", n),
+                                                   rep("not significant", n)), 2),
+                                    value=c(rgamma(n, params$betas.sig.shape,
+                                                   params$betas.sig.rate),
+                                            rgamma(n, params$betas.null.shape,
+                                                   params$betas.null.rate),
+                                            rgamma(n, params$cv.sig.shape,
+                                                   params$cv.sig.rate),
+                                            rgamma(n, params$cv.null.shape,
+                                                   params$cv.null.rate))))
 
-  ggplot(demo_data, aes(x=value, fill=qtl_type, color=qtl_type)) +
-    geom_density(alpha=0.2) +
-    facet_grid(.~statistic, scales="free") +
-    theme_classic()
+    ggplot(demo_data, aes(x=value, fill=qtl_type, color=qtl_type)) +
+        geom_density(alpha=0.2) +
+        facet_grid(.~statistic, scales="free") +
+        theme_classic()
 
 }
 

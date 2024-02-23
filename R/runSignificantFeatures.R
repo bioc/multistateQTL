@@ -15,23 +15,23 @@
 #' @importFrom data.table setDT
 #' @importFrom SummarizedExperiment assay rowData colData<-
 #' @importFrom S4Vectors metadata metadata<-
-#' 
+#'
 #' @export
 #'
 runSignificantFeatures <- function(object, assay = "significant") {
-  
-  eFeatures <- as.data.frame(assay(object, assay)) %>%
-    fmutate(.feature_id = rowData(object)[[.feature_id]]) %>% 
-    pivot_longer(-.feature_id) %>% dplyr::filter(value == TRUE) %>% unique()
-    
-  eFeatures_list <- split(eFeatures$.feature_id, eFeatures$name)
-  
-  n_eFeatures <- lapply(eFeatures_list, FUN=function(x) {length(x)})
-  
-  colData(object)$nSignificantFeatures <- unlist(n_eFeatures[colnames(object)])
-  metadata(object)$eFeatures <- eFeatures_list
-  
-  return(object)
+
+    eFeatures <- as.data.frame(assay(object, assay)) %>%
+        fmutate(.feature_id = rowData(object)[[.feature_id]]) %>%
+        pivot_longer(-.feature_id) %>% dplyr::filter(value == TRUE) %>% unique()
+
+    eFeatures_list <- split(eFeatures$.feature_id, eFeatures$name)
+
+    n_eFeatures <- lapply(eFeatures_list, FUN=function(x) {length(x)})
+
+    colData(object)$nSignificantFeatures <- unlist(n_eFeatures[colnames(object)])
+    metadata(object)$eFeatures <- eFeatures_list
+
+    return(object)
 }
 
 
