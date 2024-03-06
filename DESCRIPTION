@@ -1,8 +1,8 @@
 Package: multistateQTL
 Type: Package
-Date: 2021-10-18
+Date: 2024-02-23
 Title: Toolkit for the analysis of multi-state QTL data
-Version: 0.1.0
+Version: 0.99.0
 Authors@R: c(
     person("Christina", "Del Azodi", role=c("aut"), email="cazodi@svi.edu.au"), 
     person("Davis","McCarthy", role=c("ctb"), email="dmccarthy@svi.edu.au"),
@@ -35,12 +35,13 @@ Imports:
     mashr,
     grDevices
 Suggests: 
-    testthat, 
-    BiocStyle, 
-    knitr, 
+    testthat (>= 3.0.0),
+    BiocStyle,
+    knitr,
     covr,
     rmarkdown
 Remotes: git::https://gitlab.svi.edu.au/cazodi/qtlexperiment
 biocViews: FunctionalGenomics, GeneExpression, Sequencing, Visualization, SNP, Software
 VignetteBuilder: knitr
 RoxygenNote: 7.3.1
+Config/testthat/edition: 3
