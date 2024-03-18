@@ -44,5 +44,6 @@ greater than the permitted rate of missing values.
 
 Method to return a subset of a \linkS4class{QTLExperiment} object containing
 only the tests that are top hits. Top hits are defined as the test for each
-feature with the  an array of the top QTL for each feature across all states
+feature with the most significant test statistic.
+Returns an array of the top QTL for each feature across all states
 }

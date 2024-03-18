@@ -75,7 +75,8 @@ getSignificant <- function(qtle, n=1,
 #' @description
 #' Method to return a subset of a \linkS4class{QTLExperiment} object containing
 #' only the tests that are top hits. Top hits are defined as the test for each
-#' feature with the  an array of the top QTL for each feature across all states
+#' feature with the most significant test statistic.
+#' Returns an array of the top QTL for each feature across all states
 #'
 #' @param qtle A `QTLExperiment` object
 #' @param assay The assay containing the test statistic to minimize.
@@ -113,11 +114,11 @@ getTopHits <- function(qtle, mode=c("global", "state"),
         group_by(feature_id) %>%
         slice_min(value, n = 1, with_ties = FALSE)
 
-    }else if (mode == "state"){
+    } else if (mode == "state"){
 
-    test_statistics <- as.data.frame(assay(qtle, assay))
-    if(assay_sig %in% names(assays(qtle))){
-      test_statistics[!assay(qtle, assay_sig)] <- 1
+        test_statistics <- as.data.frame(assay(qtle, assay))
+    if (assay_sig %in% names(assays(qtle))) {
+        test_statistics[!assay(qtle, assay_sig)] <- 1
     }
     keep <- test_statistics %>%
         fmutate(id=rownames(qtle),

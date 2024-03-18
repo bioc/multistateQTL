@@ -44,32 +44,31 @@ NULL
 #' @rdname callSignificance
 #'
 #'
-.callSignificance <- function(object,
-          thresh = 0.05,
+.callSignificance <- function(object, thresh = 0.05,
           second.thresh = thresh,
           feature = .feature_id,
           assay = "pvalues",
           mode = "simple",
-          p.adjust.method=c("none", "fdr", "holm", "hochberg", "hommel",
-                            "bonferroni", "BH", "BY")){
+          p.adjust.method="fdr"){
 
-    state_thresh <- .get_thresh_per_state(object, mode,
-                                          thresh, p.adjust.method,
-                                          assay)
+    mode <- match.arg(mode, choices = c("simple", "feature-wise-FDR", "global-FDR"))
+    p.adjust.method <- match.arg(
+        p.adjust.method,
+        choices = c("fdr", "holm", "hochberg", "hommel", "bonferroni",
+            "BH", "BY", "none"))
+
+    state_thresh <- .get_thresh_per_state(
+        object, mode, thresh, p.adjust.method, assay)
     object$significance_threshold <- state_thresh[1, ]
-    significant <- as.matrix(assay(object,
-                                   assay)) <= state_thresh
+    significant <- as.matrix(assay(object, assay)) <= state_thresh
 
     # If using less strict threshold for tests with at least one sig hit
     if(!is.null(second.thresh) & second.thresh != thresh){
 
-        state_2thresh <- .get_thresh_per_state(object, mode,
-                                               second.thresh,
-                                               p.adjust.method,
-                                               assay)
+        state_2thresh <- .get_thresh_per_state(
+            object, mode, second.thresh, p.adjust.method, assay)
         object$significance_threshold2 <- state_2thresh[1, ]
-        significant.second <- as.matrix(assay(object,
-                                              assay)) <= state_2thresh
+        significant.second <- as.matrix(assay(object, assay)) <= state_2thresh
 
         first.sig <- which(rowSums(significant) > 0)
         significant[first.sig, ] <- significant.second[first.sig, ]
@@ -92,8 +91,7 @@ setMethod("callSignificance", "QTLExperiment", function(object,
                                                         feature = .feature_id,
                                                         assay = "pvalues",
                                                         mode = "simple",
-                                                        p.adjust.method=c("fdr", "holm", "hochberg", "hommel",
-                                                                                  "bonferroni", "BH", "BY", "none"), ...) {
+                                                        p.adjust.method="fdr", ...) {
     .callSignificance(object=object, thresh=thresh, second.thresh=second.thresh,
                       feature=feature, assay=assay, mode=mode,
                       p.adjust.method=p.adjust.method, ...)
@@ -123,16 +121,17 @@ setMethod("callSignificance", "QTLExperiment", function(object,
 
     } else if (mode == "global-FDR"){
         state_thresh <- apply(assay(object, assay), 2, function(x)
-            .get_corrected_thresh(x, thresh = thresh,
-                                  p.adjust.method = match.arg(p.adjust.method)))
-
+            .get_corrected_thresh(
+                x,
+                thresh = thresh,
+                p.adjust.method = p.adjust.method))
     } else if (mode == "feature-wise-FDR") {
-        top <- getTopHits(object, mode="global", assay=assay)
+        top <- getTopHits(object, mode="state", assay=assay)
         state_thresh <- apply(assay(top, assay), 2, function(x)
-            .get_corrected_thresh(x, thresh = thresh,
-                                  p.adjust.method = match.arg(p.adjust.method)))
-    } else {
-        warning("Mode not available for callSignificance...")
+            .get_corrected_thresh(
+                x,
+                thresh = thresh,
+                p.adjust.method = p.adjust.method))
     }
 
     state_thresh <- t(as.data.frame(state_thresh))

@@ -1,13 +1,10 @@
 # multistateQTL R Package
 
-multistateQTL is an R package for applying basic statistical tests, summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class (available [here](https://gitlab.svi.edu.au/biocellgen-public/qtlexperiment)), where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics.
+multistateQTL is an R package for applying basic statistical tests, summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class (available in Bioconductor, [QTLExperiment](https://bioconductor.org/packages/release/bioc/html/QTLExperiment.html)), where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics.
 
 |                |               |
 | -------------- | ------------- |
 | Project Status | [![Project Status.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) |
-| Travis CI      | [![Pipeline Status](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/badges/master/pipeline.svg)](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/-/commits/master) |
-| Test coverage  | [![Coverage Report](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/badges/master/coverage.svg)](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/-/commits/master)|
-| Latest release  | [![Latest Release](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/-/badges/release.svg)](https://gitlab.svi.edu.au/biocellgen-public/multistateqtle/-/releases)|
 
 
 ## Installation and Usage
@@ -16,10 +13,10 @@ This package in stable but undergoing active development and currently only live
 
 ```
 install.packages("devtools")
-devtools::install_git("https://gitlab.svi.edu.au/biocellgen-public/multistateQTL", build_vignettes = TRUE)
+devtools::install_git("https://github.com/dunstone-a/multistateQTL.git", build_vignettes = TRUE)
 ```
 
-We plan to submit QTLExperiment and multistateQTL to Bioconductor in the near future. Using the most recent version of R is strongly recommended (R 4.2.1 at the time of writing). 
+Using the most recent version of R is strongly recommended (R 4.3.2 at the time of writing). 
 
 There are several other packages from CRAN and Bioconductor that multistateQTL uses, so you will need to have these packages installed as well. The CRAN packages should install automatically when multistateQTL is installed, but you will need to install the Bioconductor packages manually.
 
@@ -28,7 +25,10 @@ Not all of the following are strictly necessary, but have been included here as 
 ### QTLExperiment
 
 ```{r install-qtlexperiment}
-devtools::install_git("https://gitlab.svi.edu.au/biocellgen-public/qtlexperiment.git", build_vignettes = TRUE)
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("QTLExperiment")
 ```
 
 ### CRAN
@@ -40,8 +40,6 @@ install.packages(c("knitr", "dplyr", "collapse", "ggplot2", "circlize", "vroom",
 ### Bioconductor 
 
 ```{r load-bioc}
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
 BiocManager::install(c("SummarizedExperiment", "BiocGenerics", "S4Vectors", "ComplexHeatmap"))
 ```
 

@@ -18,8 +18,7 @@ callSignificance(object, ...) <- value
   feature = .feature_id,
   assay = "pvalues",
   mode = "simple",
-  p.adjust.method = c("none", "fdr", "holm", "hochberg", "hommel", "bonferroni", "BH",
-    "BY")
+  p.adjust.method = "fdr"
 )
 
 \S4method{callSignificance}{QTLExperiment}(
@@ -29,8 +28,7 @@ callSignificance(object, ...) <- value
   feature = .feature_id,
   assay = "pvalues",
   mode = "simple",
-  p.adjust.method = c("fdr", "holm", "hochberg", "hommel", "bonferroni", "BH", "BY",
-    "none"),
+  p.adjust.method = "fdr",
   ...
 )
 }
