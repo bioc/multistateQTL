@@ -105,7 +105,7 @@ qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
 .fit_gamma <- function(x, name="str") {
 
     l <- length(x)
-    if(l <= 10){stop("Not enough data provided to accuraltey estimate parameters
+    if(l <= 10){stop("Not enough data provided to accurately estimate parameters
   for ", name, ". Provide more data or change the significance threshold.")}
 
     if(l < 100){warning("Parameters for ", name, " are being estimated from ",
