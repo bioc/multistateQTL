@@ -29,7 +29,7 @@
 #' runPairwiseSharing(m, FUN=abs) # sharing by magnitude when sign is ignored
 #'
 #' @importFrom SummarizedExperiment assay
-#' @importFrom S4Vectors metadata
+#' @importFrom S4Vectors metadata metadata<-
 #'
 #' @name runPairwiseSharing
 #' @rdname runPairwiseSharing

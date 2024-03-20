@@ -18,7 +18,6 @@ assay(sim_na, "lfsrs")[na_pattern] <- NA
 
 test_that("qtle can be subset to only rows with mostly complete entries", {
 
-    # This needs a seed!!
     # Have data for at least half of the states
     expect_message(
         getComplete(sim_na, n=0.5, verbose=TRUE),
@@ -26,11 +25,8 @@ test_that("qtle can be subset to only rows with mostly complete entries", {
 
     sim_complete <- getComplete(sim_na, n=0.5, verbose=TRUE)
 
-    # This is hard coded!!
+    # 4 rows removed for this object
     expect_equal(nrow(sim_complete), nrow(sim_na) - 4)
-
-    # This is simplified
-    expect_true(nrow(sim_complete) <= nrow(sim_na))
 })
 
 test_that("NAs can be replaced", {
@@ -127,3 +123,4 @@ test_that("NA replacement error messages work", {
 
 
 })
+
