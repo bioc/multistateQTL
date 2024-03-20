@@ -73,13 +73,16 @@ nfeatures = ntests.}
 
 \item{nstates}{number of states}
 
-\item{global}{percent of QTL tests with significant effects shared across all states}
+\item{global}{percent of QTL tests with significant effects shared across all
+states}
 
-\item{multi}{percent of QTL tests with significant effects shared across a subset of states.}
+\item{multi}{percent of QTL tests with significant effects shared across a
+subset of states.}
 
 \item{unique}{percent of QTL tests with significant effects in only one state}
 
-\item{k}{number of multi-state clusters or an array with the cluster assignments.}
+\item{k}{number of multi-state clusters or an array with the cluster
+assignments.}
 
 \item{beta_sd}{The desired standard deviation or an array of sd equal to the
 length of states for sampling beta values for each state.}

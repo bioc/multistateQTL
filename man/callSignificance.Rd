@@ -3,23 +3,12 @@
 \name{callSignificance}
 \alias{callSignificance}
 \alias{callSignificance<-}
-\alias{.callSignificance}
 \alias{callSignificance,QTLExperiment-method}
 \title{Call associations as significant in each state.}
 \usage{
 callSignificance(object, ...)
 
 callSignificance(object, ...) <- value
-
-.callSignificance(
-  object,
-  thresh = 0.05,
-  second.thresh = thresh,
-  feature = .feature_id,
-  assay = "pvalues",
-  mode = "simple",
-  p.adjust.method = "fdr"
-)
 
 \S4method{callSignificance}{QTLExperiment}(
   object,

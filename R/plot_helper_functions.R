@@ -8,7 +8,8 @@
 #' @importFrom viridis viridis
 #' @importFrom grDevices hcl.colors
 #' @importFrom stats setNames na.omit
-#'
+#' 
+#' @noRd
 .resolve_complexheatmap_colors <- function(color_by, i=1) {
 
     if (is.numeric(color_by)) {
@@ -85,6 +86,7 @@
 #' @importFrom ggplot2 scale_fill_brewer scale_color_brewer scale_fill_manual scale_color_manual
 #' @importFrom viridis scale_fill_viridis scale_color_viridis
 #'
+#' @noRd
 .resolve_plot_colors <- function(plot_out, color_by, color_by_name,
                                  fill = FALSE) {
     if ( fill ) {
@@ -151,6 +153,7 @@
 #'
 #' @importFrom ComplexHeatmap HeatmapAnnotation rowAnnotation
 #'
+#' @noRd
 .resolve_annotations <- function(anns, FUN=rowAnnotation) {
 
     annColors <- list()
