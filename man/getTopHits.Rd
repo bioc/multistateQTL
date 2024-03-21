@@ -50,9 +50,11 @@ qtle <- callSignificance(qtle)
 
 # Filter to the top tests for each feature
 qtle_glob <- getTopHits(qtle, assay="lfsrs", mode="global", verbose = TRUE)
+# There are 3 rows corresponding to the three features.
+table(feature_id(qtle_glob))
 
-
+# At most one QTL is retained for each combination of feature_id and state_id
 qtle_feat <- getTopHits(qtle, assay="lfsrs", mode="state", verbose = TRUE)
-
+table(feature_id(qtle_feat))
 
 }

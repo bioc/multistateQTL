@@ -46,7 +46,7 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
     keep <- rowSums(is.na(betas(qtle))) < n & rowSums(is.na(errors(qtle))) < n
 
     if(verbose) { message("Removing ", table(keep)[["FALSE"]],
-                          " tests with NAs in >= ", n, " states...")}
+        " tests with NAs in >= ", n, " states...")}
 
     qtle <- qtle[which(keep), ]
 
@@ -84,8 +84,8 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
 #' @export
 #'
 getSignificant <- function(qtle, n=1,
-                           assay = "significant",
-                           verbose = FALSE){
+    assay = "significant",
+    verbose = FALSE){
 
     if( ! assay %in% names(assays(qtle)) ) {
         stop("First run callSignificance()...")
@@ -158,17 +158,17 @@ getSignificant <- function(qtle, n=1,
 #' @export
 #'
 getTopHits <- function(qtle, mode=c("global", "state"),
-                       assay = "pvalues",
-                       assay_sig = "significant",
-                       verbose = FALSE){
+    assay = "pvalues",
+    assay_sig = "significant",
+    verbose = FALSE){
 
     if(verbose) { message("Selecting top hits per feature from...") }
     keep <- c()
 
     if(mode == "global"){
         keep <- as.data.frame(list(feature_id = feature_id(qtle),
-                                   id = rownames(qtle),
-                                   value = rowMins(assay(qtle, assay)))) %>%
+            id = rownames(qtle),
+            value = rowMins(assay(qtle, assay)))) %>%
         group_by(feature_id) %>%
         slice_min(value, n = 1, with_ties = FALSE)
 
@@ -180,7 +180,7 @@ getTopHits <- function(qtle, mode=c("global", "state"),
     }
     keep <- test_statistics %>%
         fmutate(id=rownames(qtle),
-                feature_id=feature_id(qtle)) %>%
+            feature_id=feature_id(qtle)) %>%
         pivot_longer(-c(feature_id, id)) %>%
         group_by(feature_id, name) %>%
         slice_min(value, n = 1, with_ties = FALSE) %>%

@@ -6,6 +6,25 @@
 \usage{
 qtleParams()
 }
+\value{
+A list with the default parameter values which can be used when simulating multistateQTL
+  data.
+}
 \description{
-Default qtle simulation parameters
+Returns a list of the default values used for parameters when 
+simulating multistateQTL data. Parameters include:
+\itemize{
+  \item betas.sig.shape
+  \item betas.sig.rate
+  \item cv.sig.shape
+  \item cv.sig.rate
+  \item betas.null.shape
+  \item betas.null.rate
+  \item cv.null.shape
+  \item cv.null.rate
+}
+}
+\examples{
+qtleParams()
+
 }

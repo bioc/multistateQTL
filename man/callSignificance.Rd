@@ -53,9 +53,16 @@ This function adds a new assay to multistateQTL object with TRUE/FALSE
 significance calls for each test for each state.
 }
 \examples{
-
 qtle <- mockQTLE()
+
+assays(qtle)
 qtle <- callSignificance(qtle)
+
+# There is now an assay called 'significant'
+assays(qtle)
+
+# Use feature-wise FDR correction -------------------------------------------
+qtle_feat <- callSignificance(qtle, thresh=0.1, mode="feature-wise-FDR")
 
 }
 \seealso{

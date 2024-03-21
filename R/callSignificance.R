@@ -30,10 +30,17 @@
 #' \code{\link{wilcox.test}}, on which this function is based.
 #'
 #' @examples
-#'
 #' qtle <- mockQTLE()
+#' 
+#' assays(qtle)
 #' qtle <- callSignificance(qtle)
-#'
+#' 
+#' # There is now an assay called 'significant'
+#' assays(qtle)
+#' 
+#' # Use feature-wise FDR correction -------------------------------------------
+#' qtle_feat <- callSignificance(qtle, thresh=0.1, mode="feature-wise-FDR")
+#' 
 #' @export
 #' @name callSignificance
 NULL
@@ -97,8 +104,8 @@ setMethod("callSignificance", "QTLExperiment",
         mode = "simple",
         p.adjust.method="fdr", ...) {
     .callSignificance(object=object, thresh=thresh, second.thresh=second.thresh,
-                      feature=feature, assay=assay, mode=mode,
-                      p.adjust.method=p.adjust.method, ...)
+        feature=feature, assay=assay, mode=mode,
+        p.adjust.method=p.adjust.method, ...)
 })
 
 
@@ -158,7 +165,7 @@ setMethod("callSignificance", "QTLExperiment",
 .get_corrected_thresh <- function(x, thresh, p.adjust.method){
 
     sig <- data.frame(list(raw = unname(x),
-                           adj = unname(p.adjust(x, method = p.adjust.method))))
+        adj = unname(p.adjust(x, method = p.adjust.method))))
     sig <- sig[sig$adj <= thresh, ]
 
     if (nrow(sig)==0) {emp_sig_thresh <- 0

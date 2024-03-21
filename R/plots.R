@@ -1,7 +1,7 @@
 #' @title Heatmap of pairwise QTL sharing with state-level annotations
 #'
 #' @description
-#' Methods to plot at heatmap of the pairwise sharing of QTL as calculated
+#' Methods to plot a heatmap of the pairwise sharing of QTL as calculated
 #' by `runPairwiseSharing`.
 #'
 #' @param object A \code{QTLExperiment} object
@@ -19,10 +19,26 @@
 #' @param size numeric scalar giving default font size for plotting theme.
 #' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
 #'
-#'
 #' @return Returns a \code{ComplexHeatmap} object.
+#' 
+#' @examples 
+#' sim <- qtleSimulate(
+#'     nstates=10, nfeatures=100, ntests=1000,
+#'     global=0.2, multi=0.4, unique=0.2, k=2)
+#' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
+#'     thresh=0.0001, second.thresh=0.0002)
+#' sim_sig <- getSignificant(sim)
+#' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+#' sim_top <- runPairwiseSharing(sim_top)
+#' 
+#' plotPairwiseSharing(sim_top)
+#' 
+#' # Plot with complex column annotations
+#' plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+#' 
+#' 
 #' @name plotPairwiseSharing
-#' @rdname plotting
+#' @rdname plotPairwiseSharing
 #'
 #' @importFrom SummarizedExperiment colData
 #' @importFrom grid gpar
@@ -34,11 +50,11 @@
 #' @export
 #'
 plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
-                                annotate_rows = NULL, annotate_cols = NULL,
-                                cell_annotate = FALSE, col_range = NULL,
-                                name = "colnames",
-                                dist.method = "pearson",
-                                size = 8, ...) {
+    annotate_rows = NULL, annotate_cols = NULL,
+    cell_annotate = FALSE, col_range = NULL,
+    name = "colnames",
+    dist.method = "pearson",
+    size = 8, ...) {
 
     if ( !is(object, "QTLExperiment") )
         stop("Object must be a QTLExperiment")
@@ -80,19 +96,19 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
     if(cell_annotate) {
         cell_annotate <- function(j, i, x, y, width, height, fill) {
             grid.text(sprintf("%.2f", mat[i, j]), x, y,
-                      gp = gpar(fontsize = size-2))
+                gp = gpar(fontsize = size-2))
         }
     } else{
         cell_annotate <- NULL
     }
 
     Heatmap(mat, name = slot, col = mat.cols,
-            clustering_distance_rows = dist.method,
-            clustering_distance_columns = dist.method,
-            top_annotation = ann_cols, right_annotation = ann_rows,
-            cell_fun = cell_annotate,
-            column_names_gp = gpar(fontsize = size),
-            row_names_gp = gpar(fontsize = size))
+        clustering_distance_rows = dist.method,
+        clustering_distance_columns = dist.method,
+        top_annotation = ann_cols, right_annotation = ann_rows,
+        cell_fun = cell_annotate,
+        column_names_gp = gpar(fontsize = size),
+        row_names_gp = gpar(fontsize = size))
 
 }
 
@@ -118,22 +134,39 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
+#' 
+#' @examples 
+#' sim <- qtleSimulate(
+#'     nstates=10, nfeatures=100, ntests=1000,
+#'     global=0.2, multi=0.4, unique=0.2, k=2)
+#' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
+#'     thresh=0.0001, second.thresh=0.0002)
+#' sim_sig <- getSignificant(sim)
+#' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+#' sim_top <- runPairwiseSharing(sim_top)
+#'
+#' plotUpSet(sim_top)
+#' 
+#' # Upset plot with complex row annotations
+#' plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+
 #' @name plotUpSet
-#' @rdname plotting
+#' @rdname plotUpSet
 #'
 #' @importFrom ComplexHeatmap make_comb_mat UpSet comb_size comb_degree set_size
 #'
 #' @export
 #'
 plotUpSet <- function(object,
-                      assay = "significant",
-                      name = "colnames",
-                      min_shared=10,
-                      min_degree=2,
-                      max_degree=NULL,
-                      annotate_by = NULL,
-                      comb_order="comb_size",
-                      set_order = order(ss)){
+    assay = "significant",
+    name = "colnames",
+    min_shared=10,
+    min_degree=2,
+    max_degree=NULL,
+    annotate_by = NULL,
+    comb_order="comb_size",
+    set_order = order(ss), 
+    ...){
 
     if( ! assay %in% names(assays(object)) ) {
         stop("Run callSignificance() first...")
@@ -175,7 +208,7 @@ plotUpSet <- function(object,
 
 
     UpSet(combMatrix, set_order = set_order,
-          comb_order = comb_order) + rowAnns
+        comb_order = comb_order) + rowAnns
 
 }
 
@@ -204,8 +237,28 @@ plotUpSet <- function(object,
 #' @param col_km Set k for k-means clustering of states
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
+#' 
+#' @examples
+#' sim <- qtleSimulate(
+#'     nstates=10, nfeatures=100, ntests=1000,
+#'     global=0.2, multi=0.4, unique=0.2, k=2)
+#' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
+#'     thresh=0.0001, second.thresh=0.0002)
+#'     
+#' sim_sig <- getSignificant(sim)
+#' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+#' sim_top <- runTestMetrics(sim_top)
+#' sim_top <- runPairwiseSharing(sim_top)
+#' sim_top_ms <- subset(sim_top, qtl_type_simple == "multistate")
+#' 
+#' plotQTLClusters(sim_top)
+#' 
+#' # Plot with annotations for multi state group
+#' plotQTLClusters(sim_top_ms, annotate_states = c("multistateGroup"),
+#'     annotate_tests = c("qtl_type", "mean_beta", "QTL"))
+#' 
 #' @name plotQTLClusters
-#' @rdname plotting
+#' @rdname plotQTLClusters
 #'
 #' @importFrom ComplexHeatmap Heatmap
 #' @importFrom methods is
@@ -213,17 +266,17 @@ plotUpSet <- function(object,
 #' @export
 #'
 plotQTLClusters <- function(object,
-                            fill_by="betas",
-                            FUN=identity,
-                            min_sig = 1,
-                            annotate_states=NULL,
-                            annotate_tests=NULL,
-                            show_row_names=FALSE,
-                            state_id = "state_id",
-                            column_order = NULL,
-                            row_order = NULL,
-                            row_km = 0,
-                            col_km = 0) {
+    fill_by="betas",
+    FUN=identity,
+    min_sig = 1,
+    annotate_states=NULL,
+    annotate_tests=NULL,
+    show_row_names=FALSE,
+    state_id = "state_id",
+    column_order = NULL,
+    row_order = NULL,
+    row_km = 0,
+    col_km = 0) {
 
     if (!is(object, "QTLExperiment")) {
         stop("Object must be a QTLExperiment")
@@ -265,10 +318,10 @@ plotQTLClusters <- function(object,
     if(is.null(column_order)){column_order <- names(mat)}
 
     Heatmap(mat, name = fill_by, col = mat.cols,
-            show_row_names = show_row_names,
-            top_annotation = ann_state,
-            row_km = row_km, column_km = col_km,
-            right_annotation = ann_tests)
+        show_row_names = show_row_names,
+        top_annotation = ann_state,
+        row_km = row_km, column_km = col_km,
+        right_annotation = ann_tests)
 }
 
 
@@ -296,23 +349,35 @@ plotQTLClusters <- function(object,
 #'
 #' @return Returns a list containing the counts for each color category
 #'         and the plot object.
+#'         
+#' @examples 
+#' sim <- qtleSimulate(
+#'     nstates=10, nfeatures=100, ntests=1000,
+#'     global=0.2, multi=0.4, unique=0.2, k=2)
+#' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
+#'     thresh=0.0001, second.thresh=0.0002)
+#' sim_sig <- getSignificant(sim)
+#' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+#' sim_top <- runPairwiseSharing(sim_top)
+#' sim_top <- runTestMetrics(sim_top)
+#' plotCompareStates(sim_top, x="S01", y="S02")
 #'
 #' @name plotCompareStates
-#' @rdname plotting
+#' @rdname plotCompareStates
 
 #' @importFrom ggplot2 geom_abline geom_point aes .data xlim ylim
 #'
 #' @export
 
 plotCompareStates <- function(object, x, y,
-                              assay="betas", FUN=identity,
-                              significance_assay = "significant",
-                              alpha=0.2,
-                              col_both="#4477AA",
-                              col_diverging="#EE6677",
-                              col_neither="gray50",
-                              col_x="#CCBB44",
-                              col_y="#AA3377") {
+    assay="betas", FUN=identity,
+    significance_assay = "significant",
+    alpha=0.2,
+    col_both="#4477AA",
+    col_diverging="#EE6677",
+    col_neither="gray50",
+    col_x="#CCBB44",
+    col_y="#AA3377") {
 
     if( ! significance_assay %in% names(assays(object)) ) {
         stop("Run callSignificance() or specify assay name that contains logical
@@ -329,8 +394,8 @@ plotCompareStates <- function(object, x, y,
     diverging <- row.names(to_plot[grepl("_diverging", to_plot[["qtl_type"]]), ])
 
     cols <- list(both_shared=col_both,
-                 both_diverging = col_diverging,
-                 not_sig=col_neither)
+        both_diverging = col_diverging,
+        not_sig=col_neither)
     cols[[x]] <- col_x
     cols[[y]] <- col_y
 
@@ -356,9 +421,15 @@ plotCompareStates <- function(object, x, y,
 #' @param n Number of random values to sample for plots.
 #'
 #' @return A ggplot2 object
+#' 
+#' @examples
+#' qtle <- mockQTLE() 
+#' params <- qtleEstimate(qtle, thresh_sig = 0.05, thresh_null = 0.5)
+#' plotSimulationParams(params=params)
+#' 
 #'
 #' @name plotSimulationParams
-#' @rdname plotting
+#' @rdname plotSimulationParams
 #'
 #' @importFrom ggplot2 ggplot geom_density facet_grid theme_classic aes
 #' @importFrom stats rgamma
@@ -366,17 +437,19 @@ plotCompareStates <- function(object, x, y,
 #'
 plotSimulationParams <- function(params, n=1e5){
 
-    demo_data <- as.data.frame(list(statistic=c(rep("beta", n*2), rep("CV", n*2)),
-                                    qtl_type=rep(c(rep("significant", n),
-                                                   rep("not significant", n)), 2),
-                                    value=c(rgamma(n, params$betas.sig.shape,
-                                                   params$betas.sig.rate),
-                                            rgamma(n, params$betas.null.shape,
-                                                   params$betas.null.rate),
-                                            rgamma(n, params$cv.sig.shape,
-                                                   params$cv.sig.rate),
-                                            rgamma(n, params$cv.null.shape,
-                                                   params$cv.null.rate))))
+    demo_data <- as.data.frame(
+        list(
+            statistic=c(rep("beta", n*2), rep("CV", n*2)),
+            qtl_type=rep(c(rep("significant", n), rep("not significant", n)), 2),
+            value=c(
+                rgamma(n, params$betas.sig.shape,
+                    params$betas.sig.rate),
+                rgamma(n, params$betas.null.shape,
+                    params$betas.null.rate),
+                rgamma(n, params$cv.sig.shape,
+                    params$cv.sig.rate),
+                rgamma(n, params$cv.null.shape,
+                    params$cv.null.rate))))
 
     ggplot(demo_data, aes(x=value, fill=qtl_type, color=qtl_type)) +
         geom_density(alpha=0.2) +
