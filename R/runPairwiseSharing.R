@@ -36,10 +36,10 @@
 #' @export
 #'
 runPairwiseSharing <- function(qtle,
-                               assay="betas",
-                               assay_sig="significant",
-                               factor=0.5,
-                               FUN=identity, ...){
+    assay="betas",
+    assay_sig="significant",
+    factor=0.5,
+    FUN=identity, ...){
 
     if( ! assay_sig %in% names(assays(qtle)) ) {
         stop("First run callSignificance()...")

@@ -39,8 +39,8 @@
 #' @export
 #'
 runTestMetrics <- function(qtle, assay="betas",
-                           significance_assay = "significant",
-                           global_buffer = 0, ...) {
+    significance_assay = "significant",
+    global_buffer = 0, ...) {
 
     if( ! significance_assay %in% names(assays(qtle)) ) {
         stop("Run callSignificance() or specify assay name that contains logical
@@ -57,27 +57,27 @@ runTestMetrics <- function(qtle, assay="betas",
 
     if(n > 2){
         type <- ifelse(nSignificant >= nGlobal, "global",
-                       ifelse(nSignificant == 0, "not_sig",
-                              ifelse(nSignificant == 1, "unique", "multistate")))
+            ifelse(nSignificant == 0, "not_sig",
+                ifelse(nSignificant == 1, "unique", "multistate")))
 
     } else if(n==2){
         state1 <- state_id(qtle)[1]
         state2 <- state_id(qtle)[2]
         type <- apply(significance_mat, 1,
-                      FUN = function(x) ifelse(sum(x) == 2, "both",
-                                               ifelse(sum(x) == 0, "not_sig",
-                                                      ifelse(x[state1]==TRUE,
-                                                             state1, state2))))
+            FUN = function(x) ifelse(sum(x) == 2, "both",
+                ifelse(sum(x) == 0, "not_sig",
+                    ifelse(x[state1]==TRUE,
+                        state1, state2))))
         both <- type[type=="both"]
     }
 
     effect_sd <- apply(beta_mat, 1, FUN = function(x) ifelse(sum(!is.na(x)) >= 2,
-                                                             sd(na.omit(x)), NA))
+        sd(na.omit(x)), NA))
 
     effect_dir <- apply(sign_mat, 1,
-                        FUN = function(x) ifelse(sum(is.na(x)) >= n-1, "",
-                                                 ifelse(length(na.omit(unique(x)))==1,
-                                                        "_shared", "_diverging")))
+        FUN = function(x) ifelse(sum(is.na(x)) >= n-1, "",
+            ifelse(length(na.omit(unique(x)))==1,
+                "_shared", "_diverging")))
 
     rowData(qtle)$nSignificant <- nSignificant
     rowData(qtle)$effect_sd <- effect_sd

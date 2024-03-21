@@ -17,6 +17,8 @@
 #'   length of states for sampling beta values for each state.
 #' @param lfsr Logical to calculate lfsr using mashr_1by1.
 #' @param verbose Logical.
+#' 
+#' @return A simulated `QTLExperiment` object.
 #'
 #' @details The simulation consists of user defined number of equal numbers of four different
 #' types of effects: null, equal among conditions, present only in
@@ -30,14 +32,14 @@
 #' @importFrom mashr mash_1by1 mash_set_data
 #'
 #' @name qtleSimulate
-#' @rdname qtle_simulations
+#' @rdname qtleSimulate
 #'
 #' @export
 #'
 
 qtleSimulate <- function(params=qtleParams(), ntests=100, nfeatures = NULL,
-                         nstates = 5, global=0.5, multi=0, unique=0,
-                         k = 2, beta_sd=0.1, lfsr=TRUE, verbose=TRUE){
+    nstates = 5, global=0.5, multi=0, unique=0,
+    k = 2, beta_sd=0.1, lfsr=TRUE, verbose=TRUE){
 
     if(is.null(nfeatures)){ nfeatures <- ntests }
 
@@ -54,33 +56,35 @@ qtleSimulate <- function(params=qtleParams(), ntests=100, nfeatures = NULL,
 
     if(verbose){
         message("Simulating: ",
-                ifelse(nGlobal > 0, sprintf('\n  %d global QTL', nGlobal), ""),
-                ifelse(nMulti > 0,
-                       sprintf('\n  %d multi-state QTL with %d different patterns',
-                               nMulti, k), ""),
-                ifelse(nUnique > 0, sprintf('\n  %d unique QTL', nUnique), ""),
-                ifelse(nNull > 0, sprintf('\n  %d tests with no QTL', nNull), ""))
+            ifelse(nGlobal > 0, sprintf('\n  %d global QTL', nGlobal), ""),
+            ifelse(nMulti > 0,
+                sprintf('\n  %d multi-state QTL with %d different patterns',
+                    nMulti, k), ""),
+            ifelse(nUnique > 0, sprintf('\n  %d unique QTL', nUnique), ""),
+            ifelse(nNull > 0, sprintf('\n  %d tests with no QTL', nNull), ""))
     }
 
     types <- c(rep("global", nGlobal), rep(.multistate, nMulti),
-               rep("unique", nUnique), rep("null", nNull))
+        rep("unique", nUnique), rep("null", nNull))
 
     key <- make.simulation.key(params, features, states, types, k, verbose)
 
     sim_betas <- simulateBetas(key, params, states, beta_sd, verbose)
     sim_error <- simulateErrors(key, params, sim_betas, verbose)
 
-    sim <- QTLExperiment(assay = list(betas=sim_betas,
-                                      errors=sim_error),
-                         rowData = key)
+    sim <- QTLExperiment(
+        assay = list(
+            betas=sim_betas,
+            errors=sim_error),
+        rowData = key)
 
     if(multi > 0){
         sim <- annotate.multistate.groups(sim)
     }
 
     if(lfsr){
-        assay(sim, "lfsrs") <- mash_1by1(mash_set_data(betas(sim),
-                                                       errors(sim)))$result$lfsr
+        assay(sim, "lfsrs") <- mash_1by1(
+            mash_set_data(betas(sim),errors(sim)))$result$lfsr
     }
 
     return(sim)
@@ -102,18 +106,18 @@ qtleSimulate <- function(params=qtleParams(), ntests=100, nfeatures = NULL,
 #' @noRd
 make.simulation.key <- function(params, features, states, types, k, verbose){
 
-    key <- as.data.frame(list(feature_id=features,
-                              variant_id=paste0("v", sample(seq(1e3:1e5),
-                                                            length(features))),
-                              QTL=sample(types, length(types), replace=FALSE)))
+    key <- as.data.frame(list(
+        feature_id=features,
+        variant_id=paste0("v", sample(seq(1e3:1e5), length(features))),
+        QTL=sample(types, length(types), replace=FALSE)))
     key[, "id"] <- paste(key$feature_id, key$variant_id, sep="|")
     key[, "mean_beta"] <- rgamma(length(features), params$betas.sig.shape,
-                                 params$betas.sig.rate)
+        params$betas.sig.rate)
     key[key$QTL == "null", "mean_beta"] <- 0
 
     # Randomly make half of betas negative
     key[, "mean_beta"] <- key[, "mean_beta"] * sample(c(1, -1), length(features),
-                                                      replace = TRUE)
+        replace = TRUE)
 
     key[, states] <- FALSE
 
@@ -176,12 +180,11 @@ make.ms.simulation.key <- function(key, states, k, verbose){
     # Assign multi-state tests to multistateGroup
     n_ms <- sum(key$QTL == "multistate")
     key[, "multistateGroup"] <- NA
-    key[key$QTL == "multistate", "multistateGroup"] <- paste0("Group",
-                                                              sample(1:k, n_ms,
-                                                                     replace=TRUE))
+    key[key$QTL == "multistate", "multistateGroup"] <- 
+        paste0("Group", sample(1:k, n_ms, replace=TRUE))
 
-    if(verbose){ message("multistateGroup sizes: ",
-                         paste(table(ms.clusters), collapse=", "))}
+    if(verbose){ message(
+        "multistateGroup sizes: ", paste(table(ms.clusters), collapse=", "))}
 
     # Fill in key
     for (ki in paste0("Group", 1:k)){
@@ -221,8 +224,8 @@ simulateBetas <- function(key, params, states, beta_sd, verbose){
     # Simulate null betas for all tests with a FALSE QTL effect
     nNull <- sum(key[, states]==FALSE)
     null_betas <- rgamma(nNull,
-                         shape=params$betas.null.shape,
-                         params$betas.null.rate)
+        shape=params$betas.null.shape,
+        params$betas.null.rate)
     null_betas <- null_betas * sample(c(1, -1), length(null_betas), replace=TRUE)
 
     sim_betas[key[, states]==FALSE] <- null_betas
@@ -244,16 +247,16 @@ simulateBetas <- function(key, params, states, beta_sd, verbose){
 simulateErrors <- function(key, params, sim_betas, verbose){
 
     states <- colnames(sim_betas)
-    sim_cvs <- matrix(rgamma(nrow(sim_betas)*ncol(sim_betas),
-                             shape=params$cv.sig.shape,
-                             rate=params$cv.sig.rate),
-                      nrow=nrow(sim_betas), ncol=ncol(sim_betas))
+    sim_cvs <- matrix(
+        rgamma(nrow(sim_betas)*ncol(sim_betas),
+            shape=params$cv.sig.shape,
+            rate=params$cv.sig.rate),
+        nrow=nrow(sim_betas), ncol=ncol(sim_betas))
 
     # Simulate null betas for all tests with a FALSE QTL effect
     nNull <- sum(key[, states]==FALSE)
-    sim_null_cvs <- rgamma(nNull,
-                           shape=params$cv.null.shape,
-                           params$cv.null.rate)
+    sim_null_cvs <- rgamma(
+        nNull, shape=params$cv.null.shape, params$cv.null.rate)
 
 
     sim_cvs[key[, states]==FALSE] <- sim_null_cvs

@@ -3,6 +3,8 @@
 #' @param qtle A `multistateQTL` object.
 #' @param assay Name of the `multistateQTL` assay containing the significance calls
 #'
+#' @returns description
+#' 
 #' @examples
 #' sim <- qtleSimulate()
 #' sim <- callSignificance(sim, assay="lfsrs", thresh=0.1)
@@ -12,7 +14,7 @@
 #' @importFrom QTLExperiment mockQTLE
 #'
 #' @name simPerformance
-#' @rdname qtle_simulations
+#' @rdname simPerformance
 #'
 #' @export
 
@@ -39,6 +41,6 @@ simPerformance <- function(qtle, assay="significant") {
     f1 <- 2 * precision * recall / (precision + recall)
 
     return(list(accuracy = accuracy, precision=precision[["TRUE"]],
-                recall=recall[["TRUE"]], f1=f1[["TRUE"]],
-                cm = cm))
+        recall=recall[["TRUE"]], f1=f1[["TRUE"]],
+        cm = cm))
 }

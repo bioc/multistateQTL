@@ -21,50 +21,50 @@
         if(all(color_by <= 1) & all(color_by >= 0)){
             n <- 9
             palette <- c("YlGnBu", "YlOrRd", "RdPu", "GnBu",
-                         "Greys", "YlOrBr", "YlGn", "BuPu")[i]
+                "Greys", "YlOrBr", "YlGn", "BuPu")[i]
 
         } else if(any(color_by < 0) & any(color_by > 0)){
             n <- 11
             min <- -1 * max(abs(min), abs(max))
             max <- max(abs(min), abs(max))
             palette <- c("RdBu", "PRGn", "BrBG", "PiYg",
-                         "PuOr", "RdGy", "Spectral", "RdYlBu")[i]
+                "PuOr", "RdGy", "Spectral", "RdYlBu")[i]
 
         } else {
             n <- 9
             palette <- c("YlGnBu", "YlOrRd", "RdPu", "GnBu",
-                         "Greys", "YlOrBr", "YlGn", "BuPu")[i]
+                "Greys", "YlOrBr", "YlGn", "BuPu")[i]
         }
         palette
         colors <- colorRamp2(seq(max, min, length = n),
-                             hcl.colors(n, palette))
+            hcl.colors(n, palette))
     }
     else {
         levels <- unique(color_by)
         nLevels <- length(levels)
 
         if (nLevels <= 10){
-            paulTolPallets <- list(bright = c("#66CCEE", "#228833", "#CCBB44",
-                                              "#AA3377", "#4477AA", "#EE6677",
-                                              "#EE7733", "#997700", "#BBCC33",
-                                              "#BBBBBB"),
-                                   muted = c("#332288", "#CC6677", "#999933",
-                                             "#44AA99", "#882255", "#DDCC77",
-                                             "#117733", "#88CCEE", "#AA4499",
-                                             "#BBBBBB"),
-                                   vibrant = c("#009988", "#EE7733", "#33BBEE",
-                                               "#EE3377", "#CC3311", "#0077BB",
-                                               "#DDAA33", "#BBCC33", "#AA4499",
-                                               "#BBBBBB"),
-                                   light = c("#77AADD", "#BBCC33", "#EE8866",
-                                             "#44BB99", "#FFAABB", "#99DDFF",
-                                             "#BBBBBB", "#AAAA00", "#EEDD88",
-                                             "#AA44DD"),
-                                   medium = c("#EECC66", "#EE99AA", "#6699CC",
-                                              "#CCDDAA", "#997700", "#994455",
-                                              "#004488", "#225522", "#DDDDDD",
-                                              "#555555"))
-
+            paulTolPallets <- list(
+                bright = c("#66CCEE", "#228833", "#CCBB44",
+                           "#AA3377", "#4477AA", "#EE6677",
+                           "#EE7733", "#997700", "#BBCC33",
+                           "#BBBBBB"),
+                muted = c("#332288", "#CC6677", "#999933",
+                          "#44AA99", "#882255", "#DDCC77",
+                          "#117733", "#88CCEE", "#AA4499",
+                          "#BBBBBB"),
+                vibrant = c("#009988", "#EE7733", "#33BBEE",
+                            "#EE3377", "#CC3311", "#0077BB",
+                            "#DDAA33", "#BBCC33", "#AA4499",
+                            "#BBBBBB"),
+                light = c("#77AADD", "#BBCC33", "#EE8866",
+                         "#44BB99", "#FFAABB", "#99DDFF",
+                         "#BBBBBB", "#AAAA00", "#EEDD88",
+                         "#AA44DD"),
+                medium = c("#EECC66", "#EE99AA", "#6699CC",
+                          "#CCDDAA", "#997700", "#994455",
+                          "#004488", "#225522", "#DDDDDD",
+                          "#555555"))
             colors <- setNames(paulTolPallets[[(i %% 5) + 1]][1:nLevels], levels)
         } else {
             colors <- setNames(viridis(nLevels), levels)
@@ -88,7 +88,8 @@
 #'
 #' @noRd
 .resolve_plot_colors <- function(plot_out, color_by, color_by_name,
-                                 fill = FALSE) {
+    fill = FALSE) {
+    
     if ( fill ) {
         if ( is.numeric(color_by) ) {
             if (all(color_by <= 1) & all(color_by >= 0)){

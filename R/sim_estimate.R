@@ -6,56 +6,56 @@
 #' @param thresh_sig Max threshold (pval/lfsr) for calling tests as significant.
 #' @param thresh_null Min threshold (pval/lfsr) for calling tests as null.
 #' @param verbose Logical.
-#'
+#' 
+#' @returns A list with parameter estimates for the QTLExperiment object.
+#' 
 #' @details The simulation consists of user defined number of equal numbers of four different
 #' types of effects: null, equal among conditions, present only in
 #' first condition, independent across conditions
 #'
 #' @examples
-#' default_params <- qtleParams()
-#' qtleEstimate(mockQTLE())
+#' qtle <- mockQTLE()
+#' qtleEstimate(qtle)
 #'
 #' @name qtleEstimate
-#' @rdname qtle_simulations
+#' @rdname qtleEstimate
 #'
 #' @importFrom stats rnorm
 #' @importFrom QTLExperiment mockQTLE
 #'
 #' @export
 qtleEstimate <- function(data, assay="pvalues",
-                         thresh_sig=0.001, thresh_null=0.1, verbose=TRUE) {
+        thresh_sig=0.001, thresh_null=0.1, verbose=TRUE) {
     UseMethod("qtleEstimate")
 }
 
 
-#' @name qtleEstimate
-#' @rdname qtle_simulations
+#' @noRd
 #' @export
 #'
 qtleEstimate.QTLExperiment <- function(data, assay="pvalues",
-                                       thresh_sig=0.001, thresh_null=0.1,
-                                       verbose=TRUE) {
+    thresh_sig=0.001, thresh_null=0.1,
+    verbose=TRUE) {
 
     if (assay %in% names(assays(data))) {
         data <- list(betas=assay(data, "betas"),
-                     errors=assay(data, "errors"),
-                     test.statistics=assay(data, assay))
+            errors=assay(data, "errors"),
+            test.statistics=assay(data, assay))
     } else{
         data <- list(betas=assay(data, "betas"),
-                     errors=assay(data, "errors"))
+            errors=assay(data, "errors"))
     }
 
     qtleEstimate(data, thresh_sig, thresh_null)
 }
 
 
-#' @name qtleEstimate
-#' @rdname qtle_simulations
+#' @noRd
 #'
 #' @export
 #' @importFrom mashr mash_1by1
 qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
-                              thresh_null=0.1, verbose=TRUE){
+    thresh_null=0.1, verbose=TRUE){
 
     if("test.statistics" %in% names(data)){
         betas <- abs(data[["betas"]])
@@ -130,7 +130,30 @@ qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
 
 
 #' @title Default qtle simulation parameters
+#' 
+#' @description
+#' Returns a list of the default values used for parameters when 
+#' simulating multistateQTL data. Parameters include:
+#' \itemize{
+#'   \item betas.sig.shape
+#'   \item betas.sig.rate
+#'   \item cv.sig.shape
+#'   \item cv.sig.rate
+#'   \item betas.null.shape
+#'   \item betas.null.rate
+#'   \item cv.null.shape
+#'   \item cv.null.rate
+#' }
 #'
+#' @returns A list with the default parameter values which can be used when simulating multistateQTL
+#'   data.
+#' 
+#' @name qtleParams
+#' @rdname qtleParams
+#' 
+#' @examples
+#' qtleParams()
+#' 
 #' @export
 qtleParams <- function() {
     list(betas.sig.shape = 6.020092,
