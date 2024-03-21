@@ -19,6 +19,7 @@ test_that("getSignificant percentage inputs work", {
 
 test_that("getTopPerFeature selects the correct snp-feature pair", {
     qtle_top <- getTopHits(qtle_sig, assay="lfsrs", mode="state", verbose = TRUE)
+    # Just looking at first state and geneC
     expect_equal(
         min(pvalues(qtle_top)[, 1]),
         min(pvalues(subset(qtle, feature_id == "geneC"))[, 1]))
@@ -26,8 +27,13 @@ test_that("getTopPerFeature selects the correct snp-feature pair", {
 
 test_that("getTopHits works with global method", {
     qtle_top <- getTopHits(qtle_sig, assay="lfsrs", mode="global", verbose = TRUE)
-
-    expect_equal(class(qtle_top)[1], "QTLExperiment")
+    expect_equal(nrow(qtle_top), length(unique(feature_id(qtle_sig))))
+    
+    # Just looking at the first feature, geneA
+    expect_equal(
+        min(pvalues(qtle[feature_id(qtle) == "geneA", ])), 
+        min(pvalues(qtle_top[feature_id(qtle_top) == "geneA", ])), 
+    )
 })
 
 
