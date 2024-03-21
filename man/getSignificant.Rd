@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_functions.R
 \name{getSignificant}
 \alias{getSignificant}
-\title{Return an array of the QTL significant in at least one state}
+\title{Filter to only QTLs significant in at least one state}
 \usage{
 getSignificant(qtle, n = 1, assay = "significant", verbose = FALSE)
 }
@@ -11,11 +11,28 @@ getSignificant(qtle, n = 1, assay = "significant", verbose = FALSE)
 
 \item{n}{Number (or percent if n < 1) of states with significant association}
 
-\item{assay}{The assay containing TRUE/FALSE significance calls for each
-QTL test.}
+\item{assay}{The assay containing TRUE/FALSE significance calls for each QTL
+test.}
 
 \item{verbose}{logical. Whether to print progress messages.}
 }
+\value{
+a subset of the `QTLExperiment` object, where all rows are
+  significant in at least one state.
+}
 \description{
-Return an array of the QTL significant in at least one state
+Filter to only QTLs significant in at least one state
+}
+\examples{
+
+qtle <- mockQTLE()
+
+qtle <- callSignificance(qtle)
+dim(qtle)
+qtle_sig <- getSignificant(qtle)
+
+# There are fewer rows because we have removed tests which are not significant
+# in any state.  
+dim(qtle_sig)
+
 }

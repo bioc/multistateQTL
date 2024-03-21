@@ -10,11 +10,31 @@
 #'
 #' @return a subset of the `QTLExperiment` object, with only tests with fewer
 #' NAs than specified by n.
+#' 
+#' @examples
+#' 
+#' # Create a QTLExperiment object with NA values ------------------------------
+#' sim <- qtleSimulate(
+#'     nstates=10, nfeatures=100, ntests=1000,
+#'     global=0.2, multi=0.4, unique=0.2, k=2)
+#'     
+#' # Randomly remove 1000 elements from the betas matrix.
+#' na_pattern <- sample(seq(1, ncol(sim)*nrow(sim)), 1000)
+#' sim_na <- sim
+#' assay(sim_na, "betas")[na_pattern] <- NA
+#' 
+#' # Original object has more rows than the output of getComplete()
+#' dim(sim_na)
+#' 
+#' sim_complete <- getComplete(sim_na)
+#' dim(sim_complete)
+#' 
+#' 
 #'
 #' @importFrom QTLExperiment betas errors
 #'
 #' @name getComplete
-#' @rdname get_functions
+#' @rdname getComplete
 #' @export
 #'
 getComplete <- function(qtle, n = 1, verbose=FALSE){
@@ -34,16 +54,33 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
     return(qtle)
 }
 
-#' Return an array of the QTL significant in at least one state
+#' Filter to only QTLs significant in at least one state
 #'
 #' @param qtle `QTLExperiment` object
 #' @param n Number (or percent if n < 1) of states with significant association
-#' @param assay The assay containing TRUE/FALSE significance calls for each
-#'                  QTL test.
+#' @param assay The assay containing TRUE/FALSE significance calls for each QTL
+#'   test.
 #' @param verbose logical. Whether to print progress messages.
+#' 
+#' @return a subset of the `QTLExperiment` object, where all rows are
+#'   significant in at least one state.
+#'   
+#' @examples
+#' 
+#' qtle <- mockQTLE()
+#' 
+#' qtle <- callSignificance(qtle)
+#' dim(qtle)
+#' qtle_sig <- getSignificant(qtle)
+#' 
+#' # There are fewer rows because we have removed tests which are not significant
+#' # in any state.  
+#' dim(qtle_sig)
 #'
 #' @importFrom SummarizedExperiment assay assays
-#'
+#' 
+#' @name getSignificant
+#' @rdname getSignificant
 #' @export
 #'
 getSignificant <- function(qtle, n=1,
@@ -75,8 +112,8 @@ getSignificant <- function(qtle, n=1,
 #' @description
 #' Method to return a subset of a \linkS4class{QTLExperiment} object containing
 #' only the tests that are top hits. Top hits are defined as the test for each
-#' feature with the most significant test statistic.
-#' Returns an array of the top QTL for each feature across all states
+#' feature with the most significant test statistic. Returns an array of the top 
+#' QTL for each feature across all states
 #'
 #' @param qtle A `QTLExperiment` object
 #' @param assay The assay containing the test statistic to minimize.
@@ -86,9 +123,30 @@ getSignificant <- function(qtle, n=1,
 #'                  QTL test.
 #' @param verbose logical. Whether to print progress messages.
 #'
-#' @return a subset of the `QTLExperiment` object, with only tests that are the
+#' @return A subset of the `QTLExperiment` object, with only tests that are the
 #' top hits for each feature (`mode=global`) or for each feature for each
 #' state (`mode=state`).
+#' 
+#' @examples
+#' sumstats <- mockSummaryStats(nStates=10, nQTL=100, names=TRUE)
+#' qtle <- QTLExperiment(
+#'     assay=list(
+#'     betas=sumstats$betas,
+#'     errors=sumstats$errors,
+#'     pvalues=sumstats$pvalues,
+#'     lfsrs=sumstats$pvalues))
+#' 
+#' # Add 'significant' assay to object
+#' qtle <- callSignificance(qtle)
+#' 
+#' # Filter to the top tests for each feature
+#' qtle_glob <- getTopHits(qtle, assay="lfsrs", mode="global", verbose = TRUE)
+#' # There are 3 rows corresponding to the three features.
+#' table(feature_id(qtle_glob))
+#' 
+#' # At most one QTL is retained for each combination of feature_id and state_id
+#' qtle_feat <- getTopHits(qtle, assay="lfsrs", mode="state", verbose = TRUE)
+#' table(feature_id(qtle_feat))
 #'
 #' @importFrom dplyr group_by slice_min %>% filter
 #' @importFrom matrixStats rowMins
@@ -96,7 +154,7 @@ getSignificant <- function(qtle, n=1,
 #' @importFrom collapse fmutate
 #'
 #' @name getTopHits
-#' @rdname get_functions
+#' @rdname getTopHits
 #' @export
 #'
 getTopHits <- function(qtle, mode=c("global", "state"),
@@ -129,7 +187,7 @@ getTopHits <- function(qtle, mode=c("global", "state"),
         filter(value < 1)
     }
 
-    keep <- unique(keep[[1]])
+    keep <- unique(keep$id)
 
     if(verbose) { message("Total number of top associations: ", length(keep)) }
 
