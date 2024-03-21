@@ -9,14 +9,23 @@ multistateQTL is an R package for applying basic statistical tests, summarizing,
 
 ## Installation and Usage
 
-This package in stable but undergoing active development and currently only lives on GitHub. To install from GitHub, use devtools:
+To install from GitHub, use devtools:
 
 ```
 install.packages("devtools")
 devtools::install_git("https://github.com/dunstone-a/multistateQTL.git", build_vignettes = TRUE)
 ```
 
-Using the most recent version of R is strongly recommended (R 4.3.2 at the time of writing). 
+From Bioconductor, use:
+
+```
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("QTLExperiment", version = "devel")
+```
+
+Using the most recent version of R is strongly recommended (R 4.4 at the time of writing). 
 
 There are several other packages from CRAN and Bioconductor that multistateQTL uses, so you will need to have these packages installed as well. The CRAN packages should install automatically when multistateQTL is installed, but you will need to install the Bioconductor packages manually.
 
