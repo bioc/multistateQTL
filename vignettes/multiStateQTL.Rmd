@@ -3,6 +3,7 @@ title: "multistateQTL: Orchestrating multi-state QTL analysis in R"
 author:
   - "Christina B Azodi"
   - "Davis McCarthy"
+  - "Amelia Dunstone"
 package: multistateQTL
 date: "`r Sys.Date()`"
 output:
@@ -15,10 +16,11 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r knitr-options, echo = FALSE}
+```{r knitr-options, echo=FALSE}
 set.seed(42)
-knitr::opts_chunk$set(warning=FALSE, error=FALSE, message=FALSE, 
-                      fig.height=6, fig.width=8)
+knitr::opts_chunk$set(
+    warning=FALSE, error=FALSE, message=FALSE, 
+    fig.height=6, fig.width=8)
 ```
 
 # Introduction
@@ -27,11 +29,19 @@ knitr::opts_chunk$set(warning=FALSE, error=FALSE, message=FALSE,
 
 ## Installation
 
-QTLExperiment and multistateQTL can be installed from GitLab:
+QTLExperiment and multistateQTL can be installed from GitHub:
 
 ```
-devtools::install_git("https://github.com/dunstone-a/QTLExperiment", build_vignettes = TRUE)
-devtools::install_git("https://gitlab.svi.edu.au/cazodi/multistateqtl.git", build_vignettes = TRUE)
+if (!require("BiocManager", quietly=TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install(c("QTLExperiment", "multistateQTL"), version="devel")
+```
+
+They are also available on GitHub:
+```
+devtools::install_git("https://github.com/dunstone-a/QTLExperiment", build_vignettes=TRUE)
+devtools::install_git(https://github.com/dunstone-a/multistateQTL", build_vignettes=TRUE)
 ```
 
 ```{r}
@@ -45,7 +55,7 @@ library(multistateQTL)
 
 Provided with real QTL summary statistics as either a `QTLE` object or a named list with betas and error (and optionally pval or lfsr), key parameters are estimated that are used to simulate realistic multi-state QTL data. We demonstrate the parameter estimation function on publicly available summary statistics from GTEx (v8). Note that this data only contains tests that were called as significant by GTEx and vroom only loads the first chunk of results as it does not read .gz compressed objects well. This truncated dataset is used in the vignette for convenience, however, to estimate the default parameters in `qtleParams()` we downloaded QTL summary statistics for all associations tested for the 10 GTEx tissues with the largest sample sizes from [Google Cloud](https://console.cloud.google.com/storage/browser/gtex-resources/GTEx_Analysis_v8_QTLs/GTEx_Analysis_v8_eQTL_all_associations?pageState=(%22StorageObjectListTable%22%3A(%22f%22%3A%22%255B%255D%22))&prefix&forceOnObjectsSortingFiltering=false&cloudshell=true)). To speed up calculations we filtered this to include only associations on chromosome 1 and considered significant tests with pval < 0.05 and null tests with a pval > 0.1. 
 
-See [QTLExperiment](https://gitlab.svi.edu.au/cazodi/qtlexperiment) for more info on the `sumstats2qtle` function and for other approaches for reading in QTL summary statistics.
+See [QTLExperiment](https://github.com/dunstone-a/QTLExperiment) for more info on the `sumstats2qtle` function and for other approaches for reading in QTL summary statistics.
 
 The parameters estimated here include:
 
@@ -77,18 +87,18 @@ head(betas(gtex))
 
 Estimating parameters: 
 
-```{r estimate-parameters}}
-params <- qtleEstimate(gtex, thresh_sig = 0.05, thresh_null = 0.5)
+```{r estimate-parameters}
+params <- qtleEstimate(gtex, thresh_sig=0.05, thresh_null=0.5)
 params
 ```
 
-Looking at the distributions defined by these estimated parameters, the simulated effect sizes for significant QTL will tend to be larger, while the simulated coefficient of variation values will be smaller than the for non-significant QTL.
+Looking at the distributions defined by these estimated parameters, the simulated effect sizes for significant QTL will tend to be larger, while the simulated coefficient of variation values will be smaller than for the non-significant QTL.
 
 ```{r plot-estimated params, fig.height=3, fig.width=6, fig.cap="Gamma distributions defined by the parameters estimated by qtleEstimate."}
 plotSimulationParams(params=params)
 ```
 
-The default parameters available through `qtleParams()` were estimated from the GTEx v8 tissue-level eQTL summary statistics from chromosome 1 using the 10 tissues with the largest sample sizes. From these data, significant QTL parameters were estimated from tests in the lowest p-value quantile, while null parameters were estimated from tests in the highest p-value quantile.  data for tests on chromosome 1 that were included in all four tissues (n=32613).
+The default parameters available through `qtleParams()` were estimated from the GTEx v8 tissue-level eQTL summary statistics from chromosome 1 using the 10 tissues with the largest sample sizes. From these data, significant QTL parameters were estimated from tests in the lowest p-value quantile, while null parameters were estimated from tests in the highest p-value quantile. Data for tests on chromosome 1 were included in all four tissues (n=32613).
 
 
 ## Simulate multi-state QTL data
@@ -111,8 +121,9 @@ head(rowData(sim))
 We can also generate more complex simulations, for example this simulation has 20% global, 40% multi-state, 20% unique, and 20% null QTL effects, where multi-state effects are assigned to one of two state-groups.
 
 ```{r complex-simulation}
-sim <- qtleSimulate(nstates=10, nfeatures=100, ntests=1000,
-                    global=0.2, multi=0.4, unique=0.2, k=2)
+sim <- qtleSimulate(
+    nstates=10, nfeatures=100, ntests=1000,
+    global=0.2, multi=0.4, unique=0.2, k=2)
 ```
 
 
@@ -171,7 +182,7 @@ The multistateQTL toolkit also provides the `callSignificance` function, which c
 sim <- callSignificance(sim, assay="lfsrs", thresh=0.05)
 
 message("Median number of significant tests per state: ", 
-        median(colData(sim)$nSignificant))
+    median(colData(sim)$nSignificant))
 ```
 
 Because we have the simulated ground-truth, we can compare these significance calls to what was simulated using the `simPerformance` function, which provides the following global (i.e. across all state) performance metrics:
@@ -179,14 +190,15 @@ Because we have the simulated ground-truth, we can compare these significance ca
 ```{r simple-sig-calling-performance}
 sim <- callSignificance(sim, assay="lfsrs", thresh=0.001)
 perf_metrics <- simPerformance(sim)
-lapply(perf_metrics, FUN = function(x) {round(x, 2)})
+lapply(perf_metrics, FUN=function(x) {round(x, 2)})
 ```
 
 As you can see the recall of TRUE significant QTL is quite low. However if we change our significance calling approach to be more flexible. 
 
 ```{r state-by-state-double-thresholds}
-sim <- callSignificance(sim, mode="simple", assay="lfsrs",
-                        thresh=0.0001, second.thresh=0.0002)
+sim <- callSignificance(
+    sim, mode="simple", assay="lfsrs",
+    thresh=0.0001, second.thresh=0.0002)
 simPerformance(sim)$recall
 ```
 
@@ -199,7 +211,7 @@ simPerformance(sim)$recall
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)
-plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+plotPairwiseSharing(sim_top, annotate_cols=c("nSignificant", "multistateGroup"))
 ```
 
 
@@ -208,7 +220,7 @@ plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"
 These plots show the set of tests that are significant, but not necessarily shared, by groups of states. 
 
 ```{r upset-plot}
-plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+plotUpSet(sim_top, annotate_by=c("nSignificant", "multistateGroup"))
 ```
 
 
@@ -235,8 +247,9 @@ hist(rowData(sim_top)$nSignificant)
 ```{r plot-multistate-QTL}
 sim_top_ms <- subset(sim_top, qtl_type_simple == "multistate")
 
-plotQTLClusters(sim_top_ms, annotate_states = c("multistateGroup"),
-                annotate_tests = c("qtl_type", "mean_beta", "QTL"))
+plotQTLClusters(
+    sim_top_ms, annotate_states=c("multistateGroup"),
+    annotate_tests=c("qtl_type", "mean_beta", "QTL"))
 ```
 
 
