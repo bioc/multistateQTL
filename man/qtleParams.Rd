@@ -24,6 +24,14 @@ simulating multistateQTL data. Parameters include:
   \item cv.null.rate
 }
 }
+\details{
+The default parameters returned by this function were generated 
+using expression QTL (eQTL) summary statistics from the 
+\href{https://www.gtexportal.org/home/}{Genotype-Tissue Expression
+(GTEx) Project} (Version 8) for the ten tissues with the largest sample 
+sizes for eQTL mapping. The eQTL tests were filtered to include only
+eQTLs on chromosome 1 that were available in all 10 tissues.
+}
 \examples{
 qtleParams()
 
