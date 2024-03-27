@@ -1,5 +1,5 @@
 # Checks for proper functioning of the reducedDim methods.
-# library(testthat); library(multiStateQTLExperiment)
+# library(testthat); library(multistateQTL)
 # source("test-simulations.R")
 
 test_that("qtle can be simulated", {

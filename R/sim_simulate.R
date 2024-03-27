@@ -293,16 +293,3 @@ annotate.multistate.groups <- function(sim){
 
 }
 
-#' Check if simulated multistate pattern passes tests
-#'
-#' @param pattern multi-state QTL pattern to test
-#' @param existing list of existing multi-state QTL patterns
-#'
-#' @noRd
-.multistate_pattern_check <- function(pattern, existing) {
-    more_than_unique <- sum(pattern) > 1
-    less_than_global <- sum(pattern) < length(pattern)
-    not_in_existing <- !any(sapply(existing, identical, pattern))
-    return(all(more_than_unique, less_than_global, not_in_existing))
-}
-

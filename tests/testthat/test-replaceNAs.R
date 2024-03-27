@@ -1,5 +1,5 @@
 # Checks that NAs can be removed or imputed.
-# library(testthat); library(multiStateQTLExperiment)
+# library(testthat); library(multistateQTL)
 # source("test-replaceNAs.R")
 
 set.seed(1234)
