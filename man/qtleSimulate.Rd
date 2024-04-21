@@ -13,7 +13,7 @@ qtleSimulate(
   multi = 0,
   unique = 0,
   k = 2,
-  beta_sd = 0.1,
+  betaSd = 0.1,
   lfsr = TRUE,
   verbose = TRUE
 )
@@ -40,8 +40,8 @@ subset of states.}
 \item{k}{number of multi-state clusters or an array with the cluster
 assignments.}
 
-\item{beta_sd}{The desired standard deviation or an array of sd equal to the
-length of states for sampling beta values for each state.}
+\item{betaSd}{The desired standard deviation or an array of standard deviations
+equal to the length of states for sampling beta values for each state.}
 
 \item{lfsr}{Logical to calculate lfsr using mashr_1by1.}
 

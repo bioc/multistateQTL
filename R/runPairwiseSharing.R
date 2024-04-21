@@ -50,8 +50,8 @@ runPairwiseSharing <- function(qtle,
     effectMat <- assay(qtle, assay)
     S <- matrix(NA, nrow=nStates, ncol=nStates)
 
-    for(i in 1:nStates){
-        for(j in i:nStates){
+    for(i in seq_len(nStates)){
+        for(j in seq_len(nStates)){
             sig_i <- which(sigMat[, i])
             sig_j <- which(sigMat[, j])
             sig_union <- union(sig_i, sig_j)

@@ -76,7 +76,7 @@ qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
 
     if(length(sig_cvs) > 1e5){
         message("Down-sampling significant examples for faster estimation.")
-        keep <- sample(1:length(sig_cvs), 1e5, replace = FALSE)
+        keep <- sample(seq_along(sig_cvs), 1e5, replace = FALSE)
         sig_cvs <- sig_cvs[keep]
         sig_betas <- sig_betas[keep]
     }
@@ -86,7 +86,7 @@ qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
 
     if(length(null_cvs) > 1e5){
         message("Down-sampling null examples for faster estimation.")
-        keep <- sample(1:length(null_cvs), 1e5, replace = FALSE)
+        keep <- sample(seq_along(null_cvs), 1e5, replace = FALSE)
         null_cvs <- null_cvs[keep]
         null_betas <- null_betas[keep]
     }

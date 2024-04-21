@@ -65,7 +65,7 @@
                           "#CCDDAA", "#997700", "#994455",
                           "#004488", "#225522", "#DDDDDD",
                           "#555555"))
-            colors <- setNames(paulTolPallets[[(i %% 5) + 1]][1:nLevels], levels)
+            colors <- setNames(paulTolPallets[[(i %% 5) + 1]][seq_along(levels)], levels)
         } else {
             colors <- setNames(viridis(nLevels), levels)
         }
