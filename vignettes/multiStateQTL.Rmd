@@ -11,9 +11,11 @@ output:
         toc: true
         toc_float: true
 vignette: >
+  \usepackage[utf8]{inputenc}
   %\VignetteIndexEntry{multistateQTL: Orchestrating multi-state QTL analysis in R}
   %\VignetteEngine{knitr::rmarkdown}
-  \usepackage[utf8]{inputenc}
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r knitr-options, echo=FALSE}
@@ -49,7 +51,7 @@ library(QTLExperiment)
 library(multistateQTL)
 ```
 
-# 2. Simulating data
+# Simulating data
 
 ## Estimate parameters from GTEx
 
@@ -88,7 +90,7 @@ head(betas(gtex))
 Estimating parameters: 
 
 ```{r estimate-parameters}
-params <- qtleEstimate(gtex, thresh_sig=0.05, thresh_null=0.5)
+params <- qtleEstimate(gtex, threshSig=0.05, threshNull=0.5)
 params
 ```
 
@@ -110,7 +112,7 @@ Simulated mean effect sizes for all non-null QTL are sampled from gamma(beta.sig
 Here is an example of a simple simulation with half of the simulated QTL tests having globally significant effects. This example uses the default parameters.
 
 ```{r basic-simulation}
-sim <- qtleSimulate(ntests=1000, nstates=6, global=0.5)
+sim <- qtleSimulate(nTests=1000, nStates=6, global=0.5)
 sim
 ```
 
@@ -122,7 +124,7 @@ We can also generate more complex simulations, for example this simulation has 2
 
 ```{r complex-simulation}
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 ```
 
@@ -143,7 +145,7 @@ table(rowData(subset(sim, QTL == "multistate"))$multistateGroup)
 ```
 
 
-# 4. Dealing with missing data
+# Dealing with missing data
 
 The multistateQTL toolkit provides two functions to help deal with missing data, `getComplete` and `replaceNAs`. The `getComplete` function is a smart subsetting function that remove QTL associations (rows) with more than an allowed amount of missing data. The `replaceNAs` function allows for NAs in each assay to be replaced with a constant or with the row mean or row median. For example, here is a snapshot of our simulated data from above with added NAs:  
 
@@ -174,7 +176,7 @@ head(betas(sim_na))
 ```
 
 
-# 5. Calling significance
+# Calling significance
 
 The multistateQTL toolkit also provides the `callSignificance` function, which calls QTL tests significant in each state using either a single or two-step threshold approach. For example, we can set a single lfsr threshold of 0.1 to call significance of our simulate QTL: 
 
@@ -198,20 +200,39 @@ As you can see the recall of TRUE significant QTL is quite low. However if we ch
 ```{r state-by-state-double-thresholds}
 sim <- callSignificance(
     sim, mode="simple", assay="lfsrs",
-    thresh=0.0001, second.thresh=0.0002)
+    thresh=0.0001, secondThresh=0.0002)
 simPerformance(sim)$recall
 ```
 
 
-# 4. Plotting global patterns of sharing
+# Plotting global patterns of sharing
+
+The `multistateQTL` package contains five functions for visualising multi-state eQTL data. 
+These functions are based on the `r BiocStyle::CRANpkg("ggplot2")`  and `r BiocStyle::Biocpkg("ComplexHeatmap")` R packages.
+
+- `plotPairwiseSharing`: based on `ComplexHeatmap::Heatmap`
+- `plotQTLClusters`: based on `ComplexHeatmap::Heatmap`
+- `plotUpSet`: based on `ComplexHeatmap::UpSet`
+- `plotCompareStates`: based on `ggplot2`
+- `plotSimulationParams`: based on `ggplot2`
+
+The functions built on `ggplot2` are compatible with `ggplot2` syntax such as the `+` operator.
 
 ## Pairwise sharing
+
+The function `plotPairwiseSharing` shows the degree of pairwise sharing of significant hits for each combination of two states. 
+Column annotations can be added by specifying a valid column name from the `colData` of the object. 
+
+In the plot below, columns are ordered by the broad cell type (`multistateGroup`) of the states. 
+We expect states belonging to the same multi-state group to be more related and have a greater degree of sharing of significant eQTLs. 
+Column annotations are used to show the number of significant eQTLs for each state.
+
 
 ```{r pairwise-sharing}
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)
-plotPairwiseSharing(sim_top, annotate_cols=c("nSignificant", "multistateGroup"))
+p1 <- plotPairwiseSharing(sim_top, annotate_cols=c("nSignificant", "multistateGroup"))
 ```
 
 
@@ -220,23 +241,24 @@ plotPairwiseSharing(sim_top, annotate_cols=c("nSignificant", "multistateGroup"))
 These plots show the set of tests that are significant, but not necessarily shared, by groups of states. 
 
 ```{r upset-plot}
-plotUpSet(sim_top, annotate_by=c("nSignificant", "multistateGroup"))
+plotUpSet(sim_top, annotateColsBy=c("nSignificant", "multistateGroup"))
 ```
 
 
-
-# 5. Characterizing multi-state QTL patterns
+# Characterizing multi-state QTL patterns
 
 ## Categorizing multi-state QTL tests
 
 Once multi-state test correction is performed, you will want to identify global, multi-state, and unique QTL. 
 
+Note that `plotCompareStates` returns a list with a `ggplot2` object as the first element and a `table` as the second element. 
+These can be accessed using the names "plot" or "counts".
+
 ```{r get-significant-simple}
 sim_top <- runTestMetrics(sim_top)
 
-
 plotCompareStates(sim_top, x="S01", y="S02")
-
+    
 table(rowData(sim_top)$qtl_type)
 
 hist(rowData(sim_top)$nSignificant)
@@ -244,13 +266,19 @@ hist(rowData(sim_top)$nSignificant)
 
 ## Visualizing multi-state QTL
 
+The function `plotQTLClusters` can be used to produce a heatmap of the eQTL betas values for each state. 
+Each row is a SNP-gene pair, and columns are states. 
+Row and column annotations can be added by naming column names from the `rowData` or `colData` of the input `QTLExperiment` object.
+
 ```{r plot-multistate-QTL}
 sim_top_ms <- subset(sim_top, qtl_type_simple == "multistate")
 
 plotQTLClusters(
-    sim_top_ms, annotate_states=c("multistateGroup"),
-    annotate_tests=c("qtl_type", "mean_beta", "QTL"))
+    sim_top_ms, 
+    annotateColsBy=c("multistateGroup"),
+    annotateRowsBy=c("qtl_type", "mean_beta", "QTL"))
 ```
+
 
 
 
