@@ -19,7 +19,7 @@ Distribution of estimated simulation parameters
 }
 \examples{
 qtle <- mockQTLE() 
-params <- qtleEstimate(qtle, thresh_sig = 0.05, thresh_null = 0.5)
+params <- qtleEstimate(qtle, threshSig = 0.05, threshNull = 0.5)
 plotSimulationParams(params=params)
 
 

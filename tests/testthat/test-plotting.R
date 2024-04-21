@@ -4,7 +4,7 @@
 
 test_that("plot simulation params works", {
 
-    params <- qtleEstimate(qtle, thresh_sig = 0.05, thresh_null = 0.5)
+    params <- qtleEstimate(qtle, threshSig = 0.05, threshNull = 0.5)
 
     p1 <- plotSimulationParams(params=params)
 
@@ -45,14 +45,14 @@ test_that("produce pairwise sharing plots with complex column annotations", {
 
     expect_output(print(class(p1)), "Heatmap")
 
-    p2 <- plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+    p2 <- plotPairwiseSharing(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 
     expect_output(print(class(p2)), "Heatmap")
 })
 
 
 test_that("produce upset plots with complex row annotations", {
-    p1 <- plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+    p1 <- plotUpSet(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
     expect_output(print(class(p1)), "Heatmap")
 })
 
@@ -75,9 +75,9 @@ test_that("plot errors work", {
     expect_error(
         plotQTLClusters(
             sim_top_ms,
-            annotate_states = c("multistateGroup"),
+            annotateColsBy = c("multistateGroup"),
                     annotate_tests = c("qtl_type", "mean_beta", "QTL"),
-            fill_by = "beta"))
+            fillBy = "beta"))
 
     # plotCompareStates
     expect_error(plotCompareStates(qtle, x="S01", y="S02"))
@@ -89,8 +89,8 @@ test_that("plot QTL clusters works", {
     sim_top <- runTestMetrics(sim_top)
     sim_top_ms <- subset(sim_top, qtl_type_simple == "multistate")
 
-    p1 <- plotQTLClusters(sim_top_ms, annotate_states = c("multistateGroup"),
-                annotate_tests = c("qtl_type", "mean_beta", "QTL"))
+    p1 <- plotQTLClusters(sim_top_ms, annotateColsBy = c("multistateGroup"),
+                annotateRowsBy = c("qtl_type", "mean_beta", "QTL"))
 
     expect_output(print(class(p1)), "Heatmap")
 })

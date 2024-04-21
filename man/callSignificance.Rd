@@ -13,7 +13,7 @@ callSignificance(object, ...) <- value
 \S4method{callSignificance}{QTLExperiment}(
   object,
   thresh = 0.05,
-  second.thresh = thresh,
+  secondThresh = thresh,
   feature = .feature_id,
   assay = "pvalues",
   mode = "simple",
@@ -30,7 +30,7 @@ callSignificance(object, ...) <- value
 
 \item{thresh}{Significance threshold.}
 
-\item{second.thresh}{Significance threshold for associations with significance in one state.}
+\item{secondThresh}{Significance threshold for associations with significance in one state.}
 
 \item{feature}{rowData column name with feature identifier.}
 

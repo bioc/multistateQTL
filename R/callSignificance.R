@@ -6,7 +6,7 @@
 #'
 #' @param object A \linkS4class{QTLExperiment} object.
 #' @param thresh Significance threshold.
-#' @param second.thresh Significance threshold for associations with significance in one state.
+#' @param secondThresh Significance threshold for associations with significance in one state.
 #' @param feature rowData column name with feature identifier.
 #' @param assay assay name with significance score.
 #' @param value Value to place in getSignificance
@@ -53,12 +53,14 @@ NULL
 #' @noRd
 .callSignificance <- function(
     object, thresh = 0.05,
-    second.thresh = thresh,
+    secondThresh = thresh,
     feature = .feature_id,
     assay = "pvalues",
     mode = "simple",
     p.adjust.method = "fdr"){
     
+    if ( !is(object, "QTLExperiment") )
+        stop("Object must be a QTLExperiment")
     
     mode <- match.arg(mode, choices = c("simple", "feature-wise-FDR", "global-FDR"))
     p.adjust.method <- match.arg(
@@ -72,10 +74,10 @@ NULL
     significant <- as.matrix(assay(object, assay)) <= state_thresh
 
     # If using less strict threshold for tests with at least one sig hit
-    if(!is.null(second.thresh) & second.thresh != thresh){
+    if(!is.null(secondThresh) & secondThresh != thresh){
 
         state_2thresh <- .get_thresh_per_state(
-            object, mode, second.thresh, p.adjust.method, assay)
+            object, mode, secondThresh, p.adjust.method, assay)
         object$significance_threshold2 <- state_2thresh[1, ]
         significant.second <- as.matrix(assay(object, assay)) <= state_2thresh
 
@@ -98,12 +100,12 @@ setMethod("callSignificance", "QTLExperiment",
     function(
         object,
         thresh = 0.05,
-        second.thresh = thresh,
+        secondThresh = thresh,
         feature = .feature_id,
         assay = "pvalues",
         mode = "simple",
         p.adjust.method="fdr", ...) {
-    .callSignificance(object=object, thresh=thresh, second.thresh=second.thresh,
+    .callSignificance(object=object, thresh=thresh, secondThresh=secondThresh,
         feature=feature, assay=assay, mode=mode,
         p.adjust.method=p.adjust.method, ...)
 })
@@ -127,7 +129,7 @@ setMethod("callSignificance", "QTLExperiment",
 #' 
 #' @noRd
 .get_thresh_per_state <- function(object, mode, thresh, p.adjust.method, assay){
-
+    
     if (mode == "simple") {
         state_thresh <- rep(thresh, ncol(object))
         names(state_thresh) <- colnames(object)

@@ -4,7 +4,7 @@
 
 set.seed(1234)
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 
 # Add some NA values to the betas, errors and lfsrs

@@ -7,12 +7,12 @@
 plotPairwiseSharing(
   object,
   slot = "pairwiseSharing",
-  annotate_rows = NULL,
-  annotate_cols = NULL,
-  cell_annotate = FALSE,
-  col_range = NULL,
+  annotateRowsBy = NULL,
+  annotateColsBy = NULL,
+  annotateCells = FALSE,
+  colourRange = NULL,
   name = "colnames",
-  dist.method = "pearson",
+  distMethod = "pearson",
   size = 8,
   ...
 )
@@ -22,20 +22,20 @@ plotPairwiseSharing(
 
 \item{slot}{Name of slot in metadata list with Pairwise Sharing matrix.}
 
-\item{annotate_rows}{character or array of characters specifying the
+\item{annotateRowsBy}{character or array of characters specifying the
 column(s) in colData to be plotted as row annotations.}
 
-\item{annotate_cols}{character or array of characters specifying the
+\item{annotateColsBy}{character or array of characters specifying the
 column(s) in colData to be plotted as column annotations.}
 
-\item{cell_annotate}{Logical to annoate cells with their values.}
+\item{annotateCells}{Logical to annotate cells with their values.}
 
-\item{col_range}{Optional range for the color legend}
+\item{colourRange}{Optional range for the color legend}
 
 \item{name}{character specifying the column in colData to use to label rows
 and columns. Default is colnames(qtle).}
 
-\item{dist.method}{Distance method used for hierarchical clustering. Valid
+\item{distMethod}{Distance method used for hierarchical clustering. Valid
 values are the supported methods in dist() function.}
 
 \item{size}{numeric scalar giving default font size for plotting theme.}
@@ -51,10 +51,10 @@ by `runPairwiseSharing`.
 }
 \examples{
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-    thresh=0.0001, second.thresh=0.0002)
+    thresh=0.0001, secondThresh=0.0002)
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)
@@ -62,7 +62,7 @@ sim_top <- runPairwiseSharing(sim_top)
 plotPairwiseSharing(sim_top)
 
 # Plot with complex column annotations
-plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+plotPairwiseSharing(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 
 
 }

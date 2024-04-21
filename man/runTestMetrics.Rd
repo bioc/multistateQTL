@@ -7,8 +7,8 @@
 runTestMetrics(
   qtle,
   assay = "betas",
-  significance_assay = "significant",
-  global_buffer = 0,
+  assaySig = "significant",
+  globalBuffer = 0,
   ...
 )
 }
@@ -17,11 +17,11 @@ runTestMetrics(
 
 \item{assay}{Name of assay containing QTL effect size estimate (e.g. betas)}
 
-\item{significance_assay}{Name of assay with TRUE/FALSE significance calls}
+\item{assaySig}{Name of assay with TRUE/FALSE significance calls}
 
-\item{global_buffer}{Number of states that can be not-significant and the
+\item{globalBuffer}{Number of states that can be not-significant and the
 QTL will still be called as global, for example, if
-global_buffer=1, then a QTL will be considered global if
+globalBuffer=1, then a QTL will be considered global if
 if is significant in all or all but 1 state.}
 
 \item{...}{arguments passed to \code{runTestMetrics}}

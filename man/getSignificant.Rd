@@ -4,14 +4,14 @@
 \alias{getSignificant}
 \title{Filter to only QTLs significant in at least one state}
 \usage{
-getSignificant(qtle, n = 1, assay = "significant", verbose = FALSE)
+getSignificant(qtle, n = 1, assaySig = "significant", verbose = FALSE)
 }
 \arguments{
 \item{qtle}{`QTLExperiment` object}
 
 \item{n}{Number (or percent if n < 1) of states with significant association}
 
-\item{assay}{The assay containing TRUE/FALSE significance calls for each QTL
+\item{assaySig}{The assay containing TRUE/FALSE significance calls for each QTL
 test.}
 
 \item{verbose}{logical. Whether to print progress messages.}

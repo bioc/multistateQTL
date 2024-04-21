@@ -44,7 +44,7 @@ test_that("getSignificant in simple mode works with one and two thresholds", {
 
     expect_equal(rowSums(pvalues(test) <= 0.1), rowSums(assay(test, "significant")))
 
-    test <- callSignificance(qtle, thresh=0.1, second.thresh=0.5, mode="simple")
+    test <- callSignificance(qtle, thresh=0.1, secondThresh=0.5, mode="simple")
     test <- getSignificant(test)
 
     expect_true(all(rowSums(assay(test, "significant")) >= rowSums(pvalues(test) <= 0.1)))

@@ -6,15 +6,15 @@
 #'
 #' @param object A \code{QTLExperiment} object
 #' @param slot Name of slot in metadata list with Pairwise Sharing matrix.
-#' @param annotate_rows character or array of characters specifying the
+#' @param annotateRowsBy character or array of characters specifying the
 #'        column(s) in colData to be plotted as row annotations.
-#' @param annotate_cols character or array of characters specifying the
+#' @param annotateColsBy character or array of characters specifying the
 #'        column(s) in colData to be plotted as column annotations.
-#' @param cell_annotate Logical to annoate cells with their values.
-#' @param col_range Optional range for the color legend
+#' @param annotateCells Logical to annotate cells with their values.
+#' @param colourRange Optional range for the color legend
 #' @param name character specifying the column in colData to use to label rows
 #'        and columns. Default is colnames(qtle).
-#' @param dist.method Distance method used for hierarchical clustering. Valid
+#' @param distMethod Distance method used for hierarchical clustering. Valid
 #'        values are the supported methods in dist() function.
 #' @param size numeric scalar giving default font size for plotting theme.
 #' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
@@ -23,10 +23,10 @@
 #' 
 #' @examples 
 #' sim <- qtleSimulate(
-#'     nstates=10, nfeatures=100, ntests=1000,
+#'     nStates=10, nFeatures=100, nTests=1000,
 #'     global=0.2, multi=0.4, unique=0.2, k=2)
 #' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-#'     thresh=0.0001, second.thresh=0.0002)
+#'     thresh=0.0001, secondThresh=0.0002)
 #' sim_sig <- getSignificant(sim)
 #' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 #' sim_top <- runPairwiseSharing(sim_top)
@@ -34,7 +34,7 @@
 #' plotPairwiseSharing(sim_top)
 #' 
 #' # Plot with complex column annotations
-#' plotPairwiseSharing(sim_top, annotate_cols = c("nSignificant", "multistateGroup"))
+#' plotPairwiseSharing(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 #' 
 #' 
 #' @name plotPairwiseSharing
@@ -50,10 +50,10 @@
 #' @export
 #'
 plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
-    annotate_rows = NULL, annotate_cols = NULL,
-    cell_annotate = FALSE, col_range = NULL,
+    annotateRowsBy = NULL, annotateColsBy = NULL,
+    annotateCells = FALSE, colourRange = NULL,
     name = "colnames",
-    dist.method = "pearson",
+    distMethod = "pearson",
     size = 8, ...) {
 
     if ( !is(object, "QTLExperiment") )
@@ -73,40 +73,40 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
         colnames(mat) <- colData(object)[, name]
     }
 
-    if(!is.null(col_range)){
-        mat.cols <- .resolve_complexheatmap_colors(col_range)
+    if(!is.null(colourRange)){
+        mat.cols <- .resolve_complexheatmap_colors(colourRange)
     } else{
         mat.cols <- .resolve_complexheatmap_colors(array(mat))
     }
 
-    if(!is.null(annotate_rows)){
-        anns <- as.data.frame(colData(object)[, annotate_rows])
-        colnames(anns) <- annotate_rows
+    if(!is.null(annotateRowsBy)){
+        anns <- as.data.frame(colData(object)[, annotateRowsBy])
+        colnames(anns) <- annotateRowsBy
         ann_rows <- .resolve_annotations(anns)
 
     }else {ann_rows <- NULL}
 
-    if(!is.null(annotate_cols)){
-        anns <- as.data.frame(colData(object)[, annotate_cols])
-        colnames(anns) <- annotate_cols
+    if(!is.null(annotateColsBy)){
+        anns <- as.data.frame(colData(object)[, annotateColsBy])
+        colnames(anns) <- annotateColsBy
         ann_cols <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
 
     }else {ann_cols <- NULL}
 
-    if(cell_annotate) {
-        cell_annotate <- function(j, i, x, y, width, height, fill) {
+    if(annotateCells) {
+        annotateCells <- function(j, i, x, y, width, height, fill) {
             grid.text(sprintf("%.2f", mat[i, j]), x, y,
                 gp = gpar(fontsize = size-2))
         }
     } else{
-        cell_annotate <- NULL
+        annotateCells <- NULL
     }
 
     Heatmap(mat, name = slot, col = mat.cols,
-        clustering_distance_rows = dist.method,
-        clustering_distance_columns = dist.method,
+        clustering_distance_rows = distMethod,
+        clustering_distance_columns = distMethod,
         top_annotation = ann_cols, right_annotation = ann_rows,
-        cell_fun = cell_annotate,
+        cell_fun = annotateCells,
         column_names_gp = gpar(fontsize = size),
         row_names_gp = gpar(fontsize = size))
 
@@ -121,10 +121,10 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #'
 #' @param object an \code{QTLExperiment} object
 #' @param assay Name of assay to use to assess significance.
-#' @param min_shared minimum number of shared QTL for set to be included.
-#' @param min_degree minimum degree of sharing for set to be included.
-#' @param max_degree maximum degree of sharing for set to be included.
-#' @param annotate_by character or array of characters specifying the
+#' @param minShared minimum number of shared QTL for set to be included.
+#' @param minDegree minimum degree of sharing for set to be included.
+#' @param maxDegree maximum degree of sharing for set to be included.
+#' @param annotateColsBy character or array of characters specifying the
 #'        column(s) in colData to be plotted as annotations.
 #' @param name character specifying the column in colData to use to label rows
 #'        and columns. Default is colnames(qtle).
@@ -137,10 +137,10 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' 
 #' @examples 
 #' sim <- qtleSimulate(
-#'     nstates=10, nfeatures=100, ntests=1000,
+#'     nStates=10, nFeatures=100, nTests=1000,
 #'     global=0.2, multi=0.4, unique=0.2, k=2)
 #' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-#'     thresh=0.0001, second.thresh=0.0002)
+#'     thresh=0.0001, secondThresh=0.0002)
 #' sim_sig <- getSignificant(sim)
 #' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 #' sim_top <- runPairwiseSharing(sim_top)
@@ -148,7 +148,7 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' plotUpSet(sim_top)
 #' 
 #' # Upset plot with complex row annotations
-#' plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+#' plotUpSet(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 
 #' @name plotUpSet
 #' @rdname plotUpSet
@@ -160,13 +160,16 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 plotUpSet <- function(object,
     assay = "significant",
     name = "colnames",
-    min_shared=10,
-    min_degree=2,
-    max_degree=NULL,
-    annotate_by = NULL,
+    minShared=10,
+    minDegree=2,
+    maxDegree=NULL,
+    annotateColsBy = NULL,
     comb_order="comb_size",
     set_order = order(ss), 
     ...){
+    
+    if ( !is(object, "QTLExperiment") )
+        stop("Object must be a QTLExperiment")
 
     if( ! assay %in% names(assays(object)) ) {
         stop("Run callSignificance() first...")
@@ -179,19 +182,19 @@ plotUpSet <- function(object,
     }
 
     combMatrix <- make_comb_mat(sigMatrix)
-    combMatrix <- combMatrix[comb_size(combMatrix) >= min_shared]
-    combMatrix <- combMatrix[comb_degree(combMatrix) >= min_degree]
+    combMatrix <- combMatrix[comb_size(combMatrix) >= minShared]
+    combMatrix <- combMatrix[comb_degree(combMatrix) >= minDegree]
 
-    if(!is.null(max_degree)){
-        combMatrix <- combMatrix[comb_degree(combMatrix) <= max_degree]
+    if(!is.null(maxDegree)){
+        combMatrix <- combMatrix[comb_degree(combMatrix) <= maxDegree]
     }
 
-    if(!is.null(annotate_by)){
-        if(!is(annotate_by, "HeatmapAnnotation")){
-            anns <- as.data.frame(colData(object)[, annotate_by])
-            colnames(anns) <- annotate_by
+    if(!is.null(annotateColsBy)){
+        if(!is(annotateColsBy, "HeatmapAnnotation")){
+            anns <- as.data.frame(colData(object)[, annotateColsBy])
+            colnames(anns) <- annotateColsBy
             rowAnns <- .resolve_annotations(anns, FUN=rowAnnotation)
-        } else{ rowAnns <- annotate_by}
+        } else{ rowAnns <- annotateColsBy}
     }else {rowAnns <- NULL}
 
     ss <- -set_size(combMatrix)
@@ -216,34 +219,34 @@ plotUpSet <- function(object,
 #' @title Heatmap of QTL across states
 #'
 #' @description
-#' Convenience method for plotting values from any assay specified by fill_by
+#' Convenience method for plotting values from any assay specified by fillBy
 #' across states and tests.
 #'
 #'
 #' @param object an \code{QTLExperiment} object.
-#' @param fill_by name of assay to use for main heatmap object.
-#' @param FUN Function to be applied to fill_by assay before plotting (e.g.
+#' @param fillBy name of assay to use for main heatmap object.
+#' @param FUN Function to be applied to fillBy assay before plotting (e.g.
 #'            identity, abs, log10).
-#' @param min_sig minimum number of significant states for QTL to be included.
-#' @param annotate_states character or array of characters specifying the
+#' @param minSig minimum number of significant states for QTL to be included.
+#' @param annotateColsBy character or array of characters specifying the
 #'        column(s) in colData to be plotted to annotate states.
-#' @param annotate_tests character or array of characters specifying the
+#' @param annotateRowsBy character or array of characters specifying the
 #'        column(s) in rowData to be plotted to annotate QTL tests.
 #' @param state_id colData column to use to label states.
-#' @param column_order Null for clustering or array to overwrite state order
-#' @param row_order Null for clustering or array to overwrite test order
+#' @param columnOrder Null for clustering or array to overwrite state order
+#' @param rowOrder Null for clustering or array to overwrite test order
 #' @param show_row_names Logical to plot row (i.e. test) names.
 #' @param row_km Set k for k-means clustering of tests.
-#' @param col_km Set k for k-means clustering of states
+#' @param column_km Set k for k-means clustering of states
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 
 #' @examples
 #' sim <- qtleSimulate(
-#'     nstates=10, nfeatures=100, ntests=1000,
+#'     nStates=10, nFeatures=100, nTests=1000,
 #'     global=0.2, multi=0.4, unique=0.2, k=2)
 #' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-#'     thresh=0.0001, second.thresh=0.0002)
+#'     thresh=0.0001, secondThresh=0.0002)
 #'     
 #' sim_sig <- getSignificant(sim)
 #' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
@@ -254,8 +257,8 @@ plotUpSet <- function(object,
 #' plotQTLClusters(sim_top)
 #' 
 #' # Plot with annotations for multi state group
-#' plotQTLClusters(sim_top_ms, annotate_states = c("multistateGroup"),
-#'     annotate_tests = c("qtl_type", "mean_beta", "QTL"))
+#' plotQTLClusters(sim_top_ms, annotateColsBy = c("multistateGroup"),
+#'     annotateRowsBy = c("qtl_type", "mean_beta", "QTL"))
 #' 
 #' @name plotQTLClusters
 #' @rdname plotQTLClusters
@@ -266,28 +269,28 @@ plotUpSet <- function(object,
 #' @export
 #'
 plotQTLClusters <- function(object,
-    fill_by="betas",
+    fillBy="betas",
     FUN=identity,
-    min_sig = 1,
-    annotate_states=NULL,
-    annotate_tests=NULL,
+    minSig = 1,
+    annotateColsBy=NULL,
+    annotateRowsBy=NULL,
     show_row_names=FALSE,
     state_id = "state_id",
-    column_order = NULL,
-    row_order = NULL,
+    columnOrder = NULL,
+    rowOrder = NULL,
     row_km = 0,
-    col_km = 0) {
+    column_km = 0) {
 
     if (!is(object, "QTLExperiment")) {
         stop("Object must be a QTLExperiment")
     }
 
-    if ( !(fill_by %in% names(assays(object)))) {
+    if ( !(fillBy %in% names(assays(object)))) {
         stop("Specify which assay to fill and cluster by")
     }
 
-    mat <- FUN(as.matrix(assays(object)[[fill_by]]))
-    if(fill_by %in% c("p", "pvalues", "lfsrs")){
+    mat <- FUN(as.matrix(assays(object)[[fillBy]]))
+    if(fillBy %in% c("p", "pvalues", "lfsrs")){
         mat <- -log10(mat)
     }
 
@@ -297,30 +300,30 @@ plotQTLClusters <- function(object,
 
     mat.cols <- .resolve_complexheatmap_colors(array(mat))
 
-    if(!is.null(annotate_states)){
-        if(!is(annotate_states, "HeatmapAnnotation")){
-            anns <- as.data.frame(colData(object)[, annotate_states])
-            colnames(anns) <- annotate_states
+    if(!is.null(annotateColsBy)){
+        if(!is(annotateColsBy, "HeatmapAnnotation")){
+            anns <- as.data.frame(colData(object)[, annotateColsBy])
+            colnames(anns) <- annotateColsBy
             ann_state <- .resolve_annotations(anns, FUN=HeatmapAnnotation)
         } else{
-            ann_state <- annotate_states }
+            ann_state <- annotateColsBy }
     }else {ann_state <- NULL}
 
-    if(!is.null(annotate_tests)){
-        if(!is(annotate_states, "HeatmapAnnotation")){
-            anns <- as.data.frame(rowData(object)[, annotate_tests])
-            colnames(anns) <- annotate_tests
+    if(!is.null(annotateRowsBy)){
+        if(!is(annotateColsBy, "HeatmapAnnotation")){
+            anns <- as.data.frame(rowData(object)[, annotateRowsBy])
+            colnames(anns) <- annotateRowsBy
             ann_tests <- .resolve_annotations(anns)
-        } else{ann_tests <- annotate_tests}
+        } else{ann_tests <- annotateRowsBy}
     }else {ann_tests <- NULL}
 
-    if(is.null(row_order)){row_order <- row.names(mat)}
-    if(is.null(column_order)){column_order <- names(mat)}
+    if(is.null(rowOrder)){rowOrder <- row.names(mat)}
+    if(is.null(columnOrder)){columnOrder <- names(mat)}
 
-    Heatmap(mat, name = fill_by, col = mat.cols,
+    Heatmap(mat, name = fillBy, col = mat.cols,
         show_row_names = show_row_names,
         top_annotation = ann_state,
-        row_km = row_km, column_km = col_km,
+        row_km = row_km, column_km = column_km,
         right_annotation = ann_tests)
 }
 
@@ -336,26 +339,26 @@ plotQTLClusters <- function(object,
 #' @param x Name of state for x-axis
 #' @param y Name of state for y-axis
 #' @param assay name of assay to plot.
-#' @param significance_assay name of assay with TRUE/FALSE significance calls.
-#' @param FUN Function to be applied to fill_by assay before plotting (e.g.
+#' @param assaySig name of assay with TRUE/FALSE significance calls.
+#' @param FUN Function to be applied to fillBy assay before plotting (e.g.
 #'            identity, abs, log10).
 #' @param alpha Transparency.
-#' @param col_both Color for tests significant in both states.
-#' @param col_diverging Color for tests significant in both states, with
+#' @param colBoth Color for tests significant in both states.
+#' @param colDiverging Color for tests significant in both states, with
 #'        diverging effect sizes.
-#' @param col_neither Color for null tests.
-#' @param col_x Color for tests significant in the x-axis state only.
-#' @param col_y Color for tests significant in the y-axis state only.
+#' @param colNeither Color for null tests.
+#' @param colX Color for tests significant in the x-axis state only.
+#' @param colY Color for tests significant in the y-axis state only.
 #'
 #' @return Returns a list containing the counts for each color category
 #'         and the plot object.
 #'         
 #' @examples 
 #' sim <- qtleSimulate(
-#'     nstates=10, nfeatures=100, ntests=1000,
+#'     nStates=10, nFeatures=100, nTests=1000,
 #'     global=0.2, multi=0.4, unique=0.2, k=2)
 #' sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-#'     thresh=0.0001, second.thresh=0.0002)
+#'     thresh=0.0001, secondThresh=0.0002)
 #' sim_sig <- getSignificant(sim)
 #' sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 #' sim_top <- runPairwiseSharing(sim_top)
@@ -371,15 +374,18 @@ plotQTLClusters <- function(object,
 
 plotCompareStates <- function(object, x, y,
     assay="betas", FUN=identity,
-    significance_assay = "significant",
+    assaySig = "significant",
     alpha=0.2,
-    col_both="#4477AA",
-    col_diverging="#EE6677",
-    col_neither="gray50",
-    col_x="#CCBB44",
-    col_y="#AA3377") {
+    colBoth="#4477AA",
+    colDiverging="#EE6677",
+    colNeither="gray50",
+    colX="#CCBB44",
+    colY="#AA3377") {
 
-    if( ! significance_assay %in% names(assays(object)) ) {
+    if ( !is(object, "QTLExperiment") )
+        stop("Object must be a QTLExperiment")
+    
+    if( ! assaySig %in% names(assays(object)) ) {
         stop("Run callSignificance() or specify assay name that contains logical
          significance calls.")
     }
@@ -393,11 +399,11 @@ plotCompareStates <- function(object, x, y,
     to_plot$name <- rownames(to_plot)
     diverging <- row.names(to_plot[grepl("_diverging", to_plot[["qtl_type"]]), ])
 
-    cols <- list(both_shared=col_both,
-        both_diverging = col_diverging,
-        not_sig=col_neither)
-    cols[[x]] <- col_x
-    cols[[y]] <- col_y
+    cols <- list(both_shared=colBoth,
+        both_diverging = colDiverging,
+        not_sig=colNeither)
+    cols[[x]] <- colX
+    cols[[y]] <- colY
 
     min_val <- min(c(to_plot[[x]], to_plot[[y]]))
     max_val <- max(c(to_plot[[x]], to_plot[[y]]))
@@ -406,7 +412,8 @@ plotCompareStates <- function(object, x, y,
         geom_point(size = 1, alpha=alpha) +
         scale_color_manual(values=cols, na.value = "#000000") +
         xlim(c(min_val, max_val)) + ylim(c(min_val, max_val)) +
-        geom_abline(linetype = "dashed", slope = 1)
+        geom_abline(linetype = "dashed", slope = 1) +
+        theme_classic()
 
     counts <- table(to_plot[, "qtl_type"])
 
@@ -424,7 +431,7 @@ plotCompareStates <- function(object, x, y,
 #' 
 #' @examples
 #' qtle <- mockQTLE() 
-#' params <- qtleEstimate(qtle, thresh_sig = 0.05, thresh_null = 0.5)
+#' params <- qtleEstimate(qtle, threshSig = 0.05, threshNull = 0.5)
 #' plotSimulationParams(params=params)
 #' 
 #'
@@ -436,6 +443,9 @@ plotCompareStates <- function(object, x, y,
 #' @export
 #'
 plotSimulationParams <- function(params, n=1e5){
+    
+    if ( !is(params, "list") )
+        stop("params must be a list with names as described in ?qtleParams")
 
     demo_data <- as.data.frame(
         list(

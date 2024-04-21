@@ -19,6 +19,9 @@
 #' @export
 
 simPerformance <- function(qtle, assay="significant") {
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
 
     state_ids <- state_id(qtle)
     if(!all(state_ids %in% names(rowData(qtle)))){

@@ -15,7 +15,7 @@
 #' 
 #' # Create a QTLExperiment object with NA values ------------------------------
 #' sim <- qtleSimulate(
-#'     nstates=10, nfeatures=100, ntests=1000,
+#'     nStates=10, nFeatures=100, nTests=1000,
 #'     global=0.2, multi=0.4, unique=0.2, k=2)
 #'     
 #' # Randomly remove 1000 elements from the betas matrix.
@@ -38,7 +38,10 @@
 #' @export
 #'
 getComplete <- function(qtle, n = 1, verbose=FALSE){
-
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
+    
     if(n < 1){
         n <- round(ncol(qtle) * n, 0)
     }
@@ -58,7 +61,7 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
 #'
 #' @param qtle `QTLExperiment` object
 #' @param n Number (or percent if n < 1) of states with significant association
-#' @param assay The assay containing TRUE/FALSE significance calls for each QTL
+#' @param assaySig The assay containing TRUE/FALSE significance calls for each QTL
 #'   test.
 #' @param verbose logical. Whether to print progress messages.
 #' 
@@ -84,10 +87,13 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
 #' @export
 #'
 getSignificant <- function(qtle, n=1,
-    assay = "significant",
+    assaySig = "significant",
     verbose = FALSE){
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
 
-    if( ! assay %in% names(assays(qtle)) ) {
+    if( ! assaySig %in% names(assays(qtle)) ) {
         stop("First run callSignificance()...")
     }
 
@@ -97,7 +103,7 @@ getSignificant <- function(qtle, n=1,
 
     if(verbose) { message("Removing QTL significant in < ", n, " states")}
 
-    keep <- rowSums(assay(qtle, assay)) >= n
+    keep <- rowSums(assay(qtle, assaySig)) >= n
     qtle <- qtle[keep, ]
 
     if(verbose) { message("Number of remaining QTL: ", nrow(qtle)) }
@@ -119,7 +125,7 @@ getSignificant <- function(qtle, n=1,
 #' @param assay The assay containing the test statistic to minimize.
 #' @param mode global/state to specify if the top hit per feature is desired
 #'             from across all states or for each state.
-#' @param assay_sig The assay containing TRUE/FALSE significance calls for each
+#' @param assaySig The assay containing TRUE/FALSE significance calls for each
 #'                  QTL test.
 #' @param verbose logical. Whether to print progress messages.
 #'
@@ -159,8 +165,11 @@ getSignificant <- function(qtle, n=1,
 #'
 getTopHits <- function(qtle, mode=c("global", "state"),
     assay = "pvalues",
-    assay_sig = "significant",
+    assaySig = "significant",
     verbose = FALSE){
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
 
     if(verbose) { message("Selecting top hits per feature from...") }
     keep <- c()
@@ -175,8 +184,8 @@ getTopHits <- function(qtle, mode=c("global", "state"),
     } else if (mode == "state"){
 
         test_statistics <- as.data.frame(assay(qtle, assay))
-    if (assay_sig %in% names(assays(qtle))) {
-        test_statistics[!assay(qtle, assay_sig)] <- 1
+    if (assaySig %in% names(assays(qtle))) {
+        test_statistics[!assay(qtle, assaySig)] <- 1
     }
     keep <- test_statistics %>%
         fmutate(id=rownames(qtle),

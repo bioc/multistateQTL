@@ -3,8 +3,8 @@
 #' @param data A `QTLExperiment` object or named list containing "betas" and
 #'            "errors" matrices.
 #' @param assay Assay containing test statistic information to use.
-#' @param thresh_sig Max threshold (pval/lfsr) for calling tests as significant.
-#' @param thresh_null Min threshold (pval/lfsr) for calling tests as null.
+#' @param threshSig Max threshold (pval/lfsr) for calling tests as significant.
+#' @param threshNull Min threshold (pval/lfsr) for calling tests as null.
 #' @param verbose Logical.
 #' 
 #' @returns A list with parameter estimates for the QTLExperiment object.
@@ -25,7 +25,7 @@
 #'
 #' @export
 qtleEstimate <- function(data, assay="pvalues",
-        thresh_sig=0.001, thresh_null=0.1, verbose=TRUE) {
+        threshSig=0.001, threshNull=0.1, verbose=TRUE) {
     UseMethod("qtleEstimate")
 }
 
@@ -34,8 +34,11 @@ qtleEstimate <- function(data, assay="pvalues",
 #' @export
 #'
 qtleEstimate.QTLExperiment <- function(data, assay="pvalues",
-    thresh_sig=0.001, thresh_null=0.1,
+    threshSig=0.001, threshNull=0.1,
     verbose=TRUE) {
+    
+    if ( !is(data, "QTLExperiment") )
+        stop("Data must be a QTLExperiment")
 
     if (assay %in% names(assays(data))) {
         data <- list(betas=assay(data, "betas"),
@@ -46,7 +49,7 @@ qtleEstimate.QTLExperiment <- function(data, assay="pvalues",
             errors=assay(data, "errors"))
     }
 
-    qtleEstimate(data, thresh_sig, thresh_null)
+    qtleEstimate(data, threshSig, threshNull)
 }
 
 
@@ -54,8 +57,8 @@ qtleEstimate.QTLExperiment <- function(data, assay="pvalues",
 #'
 #' @export
 #' @importFrom mashr mash_1by1
-qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
-    thresh_null=0.1, verbose=TRUE){
+qtleEstimate.list <- function(data, assay="pvalues", threshSig=0.01,
+    threshNull=0.1, verbose=TRUE){
 
     if("test.statistics" %in% names(data)){
         betas <- abs(data[["betas"]])
@@ -68,8 +71,8 @@ qtleEstimate.list <- function(data, assay="pvalues", thresh_sig=0.01,
         test.statistic <- x$result$lfsr
     }
 
-    index_sig <- which(test.statistic <= thresh_sig, arr.ind = TRUE)
-    index_null <- which(test.statistic >= thresh_null, arr.ind = TRUE)
+    index_sig <- which(test.statistic <= threshSig, arr.ind = TRUE)
+    index_null <- which(test.statistic >= threshNull, arr.ind = TRUE)
 
     sig_cvs <- cvs[index_sig]
     sig_betas <- betas[index_sig]

@@ -8,10 +8,10 @@ plotUpSet(
   object,
   assay = "significant",
   name = "colnames",
-  min_shared = 10,
-  min_degree = 2,
-  max_degree = NULL,
-  annotate_by = NULL,
+  minShared = 10,
+  minDegree = 2,
+  maxDegree = NULL,
+  annotateColsBy = NULL,
   comb_order = "comb_size",
   set_order = order(ss),
   ...
@@ -25,13 +25,13 @@ plotUpSet(
 \item{name}{character specifying the column in colData to use to label rows
 and columns. Default is colnames(qtle).}
 
-\item{min_shared}{minimum number of shared QTL for set to be included.}
+\item{minShared}{minimum number of shared QTL for set to be included.}
 
-\item{min_degree}{minimum degree of sharing for set to be included.}
+\item{minDegree}{minimum degree of sharing for set to be included.}
 
-\item{max_degree}{maximum degree of sharing for set to be included.}
+\item{maxDegree}{maximum degree of sharing for set to be included.}
 
-\item{annotate_by}{character or array of characters specifying the
+\item{annotateColsBy}{character or array of characters specifying the
 column(s) in colData to be plotted as annotations.}
 
 \item{comb_order}{characters specifying how sets should be ordered. Options
@@ -50,10 +50,10 @@ significant in sets of states.
 }
 \examples{
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-    thresh=0.0001, second.thresh=0.0002)
+    thresh=0.0001, secondThresh=0.0002)
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)
@@ -61,5 +61,5 @@ sim_top <- runPairwiseSharing(sim_top)
 plotUpSet(sim_top)
 
 # Upset plot with complex row annotations
-plotUpSet(sim_top, annotate_by = c("nSignificant", "multistateGroup"))
+plotUpSet(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 }

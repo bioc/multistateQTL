@@ -7,8 +7,8 @@
 qtleEstimate(
   data,
   assay = "pvalues",
-  thresh_sig = 0.001,
-  thresh_null = 0.1,
+  threshSig = 0.001,
+  threshNull = 0.1,
   verbose = TRUE
 )
 }
@@ -18,9 +18,9 @@ qtleEstimate(
 
 \item{assay}{Assay containing test statistic information to use.}
 
-\item{thresh_sig}{Max threshold (pval/lfsr) for calling tests as significant.}
+\item{threshSig}{Max threshold (pval/lfsr) for calling tests as significant.}
 
-\item{thresh_null}{Min threshold (pval/lfsr) for calling tests as null.}
+\item{threshNull}{Min threshold (pval/lfsr) for calling tests as null.}
 
 \item{verbose}{Logical.}
 }

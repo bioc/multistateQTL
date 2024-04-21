@@ -10,13 +10,13 @@ plotCompareStates(
   y,
   assay = "betas",
   FUN = identity,
-  significance_assay = "significant",
+  assaySig = "significant",
   alpha = 0.2,
-  col_both = "#4477AA",
-  col_diverging = "#EE6677",
-  col_neither = "gray50",
-  col_x = "#CCBB44",
-  col_y = "#AA3377"
+  colBoth = "#4477AA",
+  colDiverging = "#EE6677",
+  colNeither = "gray50",
+  colX = "#CCBB44",
+  colY = "#AA3377"
 )
 }
 \arguments{
@@ -28,23 +28,23 @@ plotCompareStates(
 
 \item{assay}{name of assay to plot.}
 
-\item{FUN}{Function to be applied to fill_by assay before plotting (e.g.
+\item{FUN}{Function to be applied to fillBy assay before plotting (e.g.
 identity, abs, log10).}
 
-\item{significance_assay}{name of assay with TRUE/FALSE significance calls.}
+\item{assaySig}{name of assay with TRUE/FALSE significance calls.}
 
 \item{alpha}{Transparency.}
 
-\item{col_both}{Color for tests significant in both states.}
+\item{colBoth}{Color for tests significant in both states.}
 
-\item{col_diverging}{Color for tests significant in both states, with
+\item{colDiverging}{Color for tests significant in both states, with
 diverging effect sizes.}
 
-\item{col_neither}{Color for null tests.}
+\item{colNeither}{Color for null tests.}
 
-\item{col_x}{Color for tests significant in the x-axis state only.}
+\item{colX}{Color for tests significant in the x-axis state only.}
 
-\item{col_y}{Color for tests significant in the y-axis state only.}
+\item{colY}{Color for tests significant in the y-axis state only.}
 }
 \value{
 Returns a list containing the counts for each color category
@@ -56,10 +56,10 @@ between two states.
 }
 \examples{
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 sim <- callSignificance(sim, mode="simple", assay="lfsrs", 
-    thresh=0.0001, second.thresh=0.0002)
+    thresh=0.0001, secondThresh=0.0002)
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)

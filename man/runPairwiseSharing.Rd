@@ -8,7 +8,7 @@ conditions}
 runPairwiseSharing(
   qtle,
   assay = "betas",
-  assay_sig = "significant",
+  assaySig = "significant",
   factor = 0.5,
   FUN = identity,
   ...
@@ -20,7 +20,7 @@ runPairwiseSharing(
 \item{assay}{The assay containing the metric used to determine sharing (i.e.
 the metric to be within a factor X to be considered shared).}
 
-\item{assay_sig}{The assay containing significance information.}
+\item{assaySig}{The assay containing significance information.}
 
 \item{factor}{a number in [0,1] the factor within which effects are
 considered to be shared}

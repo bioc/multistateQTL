@@ -25,7 +25,7 @@ greater than the permitted rate of missing values.
 
 # Create a QTLExperiment object with NA values ------------------------------
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
     
 # Randomly remove 1000 elements from the betas matrix.

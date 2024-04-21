@@ -8,7 +8,7 @@ getTopHits(
   qtle,
   mode = c("global", "state"),
   assay = "pvalues",
-  assay_sig = "significant",
+  assaySig = "significant",
   verbose = FALSE
 )
 }
@@ -20,7 +20,7 @@ from across all states or for each state.}
 
 \item{assay}{The assay containing the test statistic to minimize.}
 
-\item{assay_sig}{The assay containing TRUE/FALSE significance calls for each
+\item{assaySig}{The assay containing TRUE/FALSE significance calls for each
 QTL test.}
 
 \item{verbose}{logical. Whether to print progress messages.}

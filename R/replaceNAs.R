@@ -46,6 +46,9 @@
 replaceNAs <- function(object,
     methods=list(betas=0, errors="mean", pvalues=1, lfsrs=1), verbose=FALSE){
     
+    if ( !is(object, "QTLExperiment") )
+        stop("Object must be a QTLExperiment")
+    
     if(!all(names(assays(object)) %in% names(methods))){
         stop("Provide replacement method for all assays...")
     }

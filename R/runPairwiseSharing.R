@@ -4,7 +4,7 @@
 #' @param qtle A `QTLExperiment` object.
 #' @param assay The assay containing the metric used to determine sharing (i.e.
 #'              the metric to be within a factor X to be considered shared).
-#' @param assay_sig The assay containing significance information.
+#' @param assaySig The assay containing significance information.
 #' @param factor a number in [0,1] the factor within which effects are
 #'               considered to be shared
 #' @param FUN a function to be applied to the estimated effect sizes before
@@ -37,16 +37,19 @@
 #'
 runPairwiseSharing <- function(qtle,
     assay="betas",
-    assay_sig="significant",
+    assaySig="significant",
     factor=0.5,
     FUN=identity, ...){
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
 
-    if( ! assay_sig %in% names(assays(qtle)) ) {
+    if( ! assaySig %in% names(assays(qtle)) ) {
         stop("First run callSignificance()...")
     }
 
     nStates <- ncol(qtle)
-    sigMat <- assay(qtle, assay_sig)
+    sigMat <- assay(qtle, assaySig)
     effectMat <- assay(qtle, assay)
     S <- matrix(NA, nrow=nStates, ncol=nStates)
 

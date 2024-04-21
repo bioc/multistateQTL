@@ -13,10 +13,10 @@
 #'
 #' @param qtle QTLExperiment qtle
 #' @param assay Name of assay containing QTL effect size estimate (e.g. betas)
-#' @param significance_assay Name of assay with TRUE/FALSE significance calls
-#' @param global_buffer Number of states that can be not-significant and the
+#' @param assaySig Name of assay with TRUE/FALSE significance calls
+#' @param globalBuffer Number of states that can be not-significant and the
 #'                      QTL will still be called as global, for example, if
-#'                      global_buffer=1, then a QTL will be considered global if
+#'                      globalBuffer=1, then a QTL will be considered global if
 #'                      if is significant in all or all but 1 state.
 #' @param ... arguments passed to \code{runTestMetrics}
 #'
@@ -39,20 +39,23 @@
 #' @export
 #'
 runTestMetrics <- function(qtle, assay="betas",
-    significance_assay = "significant",
-    global_buffer = 0, ...) {
+    assaySig = "significant",
+    globalBuffer = 0, ...) {
+    
+    if ( !is(qtle, "QTLExperiment") )
+        stop("qtle must be a QTLExperiment")
 
-    if( ! significance_assay %in% names(assays(qtle)) ) {
+    if( ! assaySig %in% names(assays(qtle)) ) {
         stop("Run callSignificance() or specify assay name that contains logical
          significance calls.")
     }
 
-    significance_mat <- assay(qtle, significance_assay)
+    significance_mat <- assay(qtle, assaySig)
     beta_mat <- assay(qtle, assay)
     beta_mat[!significance_mat] <- NA
     sign_mat <- sign(beta_mat)
     n <- ncol(qtle)
-    nGlobal <- ncol(qtle) - global_buffer
+    nGlobal <- ncol(qtle) - globalBuffer
     nSignificant <- rowSums(significance_mat)
 
     if(n > 2){

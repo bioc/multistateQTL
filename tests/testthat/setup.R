@@ -21,10 +21,10 @@ variant_ids <- gsub(".*\\|", "", row.names(sumstats$betas))
 ## Simulated object with LFSRS -------------------------------------------------
 
 sim <- qtleSimulate(
-    nstates=10, nfeatures=100, ntests=1000,
+    nStates=10, nFeatures=100, nTests=1000,
     global=0.2, multi=0.4, unique=0.2, k=2)
 sim <- callSignificance(sim, mode="simple", assay="lfsrs",
-                        thresh=0.0001, second.thresh=0.0002)
+                        thresh=0.0001, secondThresh=0.0002)
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 

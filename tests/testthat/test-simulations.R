@@ -4,12 +4,12 @@
 
 test_that("qtle can be simulated", {
     # Simulated QTLE where half of the QTLs are globally significant
-    sim <- qtleSimulate(ntests=1000, nstates=6, global=0.5)
+    sim <- qtleSimulate(nTests=1000, nStates=6, global=0.5)
 
     expect_equal(class(sim)[1], "QTLExperiment")
     expect_equal(sum(rowData(sim)$QTL == "global")/nrow(sim), 0.5)
 
-    sim <- qtleSimulate(nstates=10, nfeatures=100, ntests=1000,
+    sim <- qtleSimulate(nStates=10, nFeatures=100, nTests=1000,
         global=0.2, multi=0.4, unique=0.2, k=2)
 
     expect_equal(class(sim)[1], "QTLExperiment")

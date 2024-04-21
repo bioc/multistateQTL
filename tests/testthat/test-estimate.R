@@ -4,7 +4,7 @@
 
 test_that("estimate parameters works for gtex data", {
 
-    params <- qtleEstimate(gtex, thresh_sig = 0.05, thresh_null = 0.5)
+    params <- qtleEstimate(gtex, threshSig = 0.05, threshNull = 0.5)
     params
 
     expect_equal(round(params$cv.sig.shape, 4), 7.0706)
