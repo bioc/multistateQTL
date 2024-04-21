@@ -40,19 +40,6 @@ if (!require("BiocManager", quietly = TRUE))
 BiocManager::install("QTLExperiment")
 ```
 
-### CRAN
-
-```{r install-cran}
-install.packages(c("knitr", "dplyr", "collapse", "ggplot2", "circlize", "vroom", "mashr", "tidyr", "fitdistrplus"))
-```
-
-### Bioconductor 
-
-```{r load-bioc}
-BiocManager::install(c("SummarizedExperiment", "BiocGenerics", "S4Vectors", "ComplexHeatmap"))
-```
-
-
 ## Getting started
 
 Get started with multistateQTL by checking out the vignette. From inside an R session, load multistateQTL and then browse the vignettes:
@@ -77,4 +64,5 @@ Here is a running list of features that we plan to add to the multistateQTL pack
 
 The package is currently in a Beta state. The major functionality of the package is settled, but it is still under development so may change from time to time. Please do try it and contact me with bug reports, feedback, feature requests, questions and suggestions to improve the package.
 
-Christina Brady Del Azodi, November 2022
+Written by Christina Brady Del Azodi, November 2022
+Revised by Amelia Dunstone, April 2024
