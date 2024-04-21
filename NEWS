@@ -1,2 +1,7 @@
 Changes in version 0.99.0 (2024-03-22)
 + Submitted to Bioconductor
+
+Changes in version 0.99.1 (2024-04-21)
++ Small tweaks e.g. using seq_along()
++ Changed some arguments to use camelCase instead of snake_case
++ Improved vignette.
