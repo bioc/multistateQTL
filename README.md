@@ -22,14 +22,14 @@ From Bioconductor, use:
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("QTLExperiment", version = "devel")
+BiocManager::install("multistateQTL", version = "devel")
 ```
 
 Using the most recent version of R is strongly recommended (R 4.4 at the time of writing). 
 
 There are several other packages from CRAN and Bioconductor that multistateQTL uses, so you will need to have these packages installed as well. The CRAN packages should install automatically when multistateQTL is installed, but you will need to install the Bioconductor packages manually.
 
-Not all of the following are strictly necessary, but have been included here as they enhance the functionality of multistateQTL. The commands below should help with package installations.
+It is also necessary to install the package QTLExperiment. 
 
 ### QTLExperiment
 
