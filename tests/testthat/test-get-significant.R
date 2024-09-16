@@ -86,3 +86,11 @@ test_that("getSignificant global and feature-wise modes works", {
 
 })
 
+test_that("runSignificantFeatures creates a summary", {
+    qtle_sig <- runSignificantFeatures(qtle_sig)
+    
+    expect_equal(
+        names(metadata(qtle_sig)),
+        "eFeatures")
+})
+
