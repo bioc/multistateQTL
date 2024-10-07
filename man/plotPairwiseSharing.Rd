@@ -40,7 +40,7 @@ values are the supported methods in dist() function.}
 
 \item{size}{numeric scalar giving default font size for plotting theme.}
 
-\item{...}{further arguments passed to \code{\link[Rtsne]{Rtsne}}}
+\item{...}{further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.}
 }
 \value{
 Returns a \code{ComplexHeatmap} object.

@@ -46,26 +46,38 @@
         if (nLevels <= 10){
             paulTolPallets <- list(
                 bright = c("#66CCEE", "#228833", "#CCBB44",
-                           "#AA3377", "#4477AA", "#EE6677",
-                           "#EE7733", "#997700", "#BBCC33",
-                           "#BBBBBB"),
+                            "#AA3377", "#4477AA", "#EE6677",
+                            "#EE7733", "#997700", "#BBCC33",
+                            "#BBBBBB"),
                 muted = c("#332288", "#CC6677", "#999933",
-                          "#44AA99", "#882255", "#DDCC77",
-                          "#117733", "#88CCEE", "#AA4499",
-                          "#BBBBBB"),
+                            "#44AA99", "#882255", "#DDCC77",
+                            "#117733", "#88CCEE", "#AA4499",
+                            "#BBBBBB"),
                 vibrant = c("#009988", "#EE7733", "#33BBEE",
                             "#EE3377", "#CC3311", "#0077BB",
                             "#DDAA33", "#BBCC33", "#AA4499",
                             "#BBBBBB"),
                 light = c("#77AADD", "#BBCC33", "#EE8866",
-                         "#44BB99", "#FFAABB", "#99DDFF",
-                         "#BBBBBB", "#AAAA00", "#EEDD88",
-                         "#AA44DD"),
+                            "#44BB99", "#FFAABB", "#99DDFF",
+                            "#BBBBBB", "#AAAA00", "#EEDD88",
+                            "#AA44DD"),
                 medium = c("#EECC66", "#EE99AA", "#6699CC",
-                          "#CCDDAA", "#997700", "#994455",
-                          "#004488", "#225522", "#DDDDDD",
-                          "#555555"))
+                            "#CCDDAA", "#997700", "#994455",
+                            "#004488", "#225522", "#DDDDDD",
+                            "#555555"))
             colors <- setNames(paulTolPallets[[(i %% 5) + 1]][seq_along(levels)], levels)
+        } else if (nLevels <= 36) {
+            # Palete from Polychrome::palette36.colors()
+            palette36 <- c("#5A5156", "#E4E1E3", "#F6222E",  "#FE00FA",
+                "#16FF32", "#3283FE", "#FEAF16", "#B00068",
+                "#1CFFCE", "#90AD1C", "#2ED9FF", "#DEA0FD", 
+                "#AA0DFE", "#F8A19F", "#325A9B", "#C4451C",
+                "#1C8356", "#85660D", "#B10DA1", "#FBE426",
+                "#1CBE4F", "#FA0087", "#FC1CBF", "#F7E1A0",
+                "#C075A6", "#782AB6", "#AAF400", "#BDCDFF",
+                "#822E1C", "#B5EFB5", "#7ED7D1", "#1C7F93",
+                "#D85FF7", "#683B79", "#66B0FF", "#3B00FB" )
+            colors <- setNames(palette36[seq_along(levels)], levels)
         } else {
             colors <- setNames(viridis(nLevels), levels)
         }

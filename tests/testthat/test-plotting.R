@@ -48,6 +48,20 @@ test_that("produce pairwise sharing plots with complex column annotations", {
     p2 <- plotPairwiseSharing(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
 
     expect_output(print(class(p2)), "Heatmap")
+    
+    sim <- qtleSimulate(
+        nStates=12, nFeatures=100, nTests=1000,
+        global=0.2, multi=0.4, unique=0.2, k=2)
+    sim <- callSignificance(sim, mode="simple", assay="lfsrs",
+        thresh=0.0001, secondThresh=0.0002)
+    sim_sig <- getSignificant(sim)
+    sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
+
+    sim_top <- runPairwiseSharing(sim_top)
+    
+    # More than 10 colours
+    p3 <- plotPairwiseSharing(sim_top, annotateColsBy = c("nSignificant", "state_id"))
+    expect_output(print(class(p3)), "Heatmap")
 })
 
 

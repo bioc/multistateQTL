@@ -17,7 +17,7 @@
 #' @param distMethod Distance method used for hierarchical clustering. Valid
 #'        values are the supported methods in dist() function.
 #' @param size numeric scalar giving default font size for plotting theme.
-#' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
+#' @param ... further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 
