@@ -45,4 +45,4 @@ Suggests:
     rmarkdown
 biocViews: FunctionalGenomics, GeneExpression, Sequencing, Visualization, SNP, Software
 VignetteBuilder: knitr
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
