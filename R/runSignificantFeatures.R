@@ -24,12 +24,12 @@
 #' qtle <- callSignificance(qtle)
 #' 
 #' # There is an assay called 'significant'
-#' assays(qtle_sig)
+#' assays(qtle)
 #' 
 #' # Obtain summary of significant features for each state
 #' qtle <- runSignificantFeatures(qtle)
 #' 
-#' # There is summary added to the metadata of the object
+#' # There is a summary added to the metadata of the object
 #' metadata(qtle)
 #' 
 #' @name runSignificantFeatures
