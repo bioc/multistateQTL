@@ -37,7 +37,7 @@ QTLExperiment and multistateQTL can be installed from GitHub:
 if (!require("BiocManager", quietly=TRUE))
     install.packages("BiocManager")
 
-BiocManager::install(c("QTLExperiment", "multistateQTL"), version="devel")
+BiocManager::install(c("QTLExperiment", "multistateQTL"))
 ```
 
 They are also available on GitHub:

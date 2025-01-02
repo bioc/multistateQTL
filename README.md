@@ -22,7 +22,7 @@ From Bioconductor, use:
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 
-BiocManager::install("multistateQTL", version = "devel")
+BiocManager::install("multistateQTL")
 ```
 
 Using the most recent version of R is strongly recommended (R 4.4 at the time of writing). 
