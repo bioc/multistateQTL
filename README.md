@@ -64,5 +64,5 @@ Here is a running list of features that we plan to add to the multistateQTL pack
 
 The package is currently in a Beta state. The major functionality of the package is settled, but it is still under development so may change from time to time. Please do try it and contact me with bug reports, feedback, feature requests, questions and suggestions to improve the package.
 
-Written by Christina Brady Del Azodi, November 2022
+Written by Christina Brady Del Azodi, November 2022.
 Revised by Amelia Dunstone, April 2024
