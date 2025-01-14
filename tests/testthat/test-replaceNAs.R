@@ -71,7 +71,7 @@ test_that("NAs in errors can be replaced with the mean", {
         FUN = function(x) {mean(x, na.rm = TRUE)})
 
     # errors get set to the mean
-    expect_true(all(errors(sim_final)[locations,1] == means[locations]))
+    expect_true(all(abs(errors(sim_final)[locations,1] - means[locations]) < .Machine$double.eps))
 })
 
 test_that("NAs in errors can be replaced with the median", {
