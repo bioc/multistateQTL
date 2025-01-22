@@ -47,9 +47,15 @@ getComplete <- function(qtle, n = 1, verbose=FALSE){
     }
 
     keep <- rowSums(is.na(betas(qtle))) < n & rowSums(is.na(errors(qtle))) < n
-
-    if(verbose) { message("Removing ", table(keep)[["FALSE"]],
-        " tests with NAs in >= ", n, " states...")}
+    
+    if(all(keep)) {
+        if(verbose) {message("No rows were removed.")}
+        return(qtle)
+    }
+    
+    if(verbose) {
+        message("Removing ", table(keep)[["FALSE"]],
+            " tests with NAs in >= ", n, " states...")}
 
     qtle <- qtle[which(keep), ]
 

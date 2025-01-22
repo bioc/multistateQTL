@@ -27,6 +27,12 @@ test_that("qtle can be subset to only rows with mostly complete entries", {
 
     # 4 rows removed for this object
     expect_equal(nrow(sim_complete), nrow(sim_na) - 4)
+    
+    # get complete should still work if verbose = TRUE and no rows are removed
+    expect_message(
+        getComplete(sim_complete, n=0.5, verbose = TRUE),
+        "No rows were removed."
+    )
 })
 
 test_that("NAs can be replaced", {
