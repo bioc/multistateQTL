@@ -2,10 +2,6 @@
 
 multistateQTL is an R package for applying basic statistical tests, summarizing, and visualizing QTL summary statistics from multiple states (e.g., tissues, celltypes, environmental conditions). It works on the `QTLExperiment` (`QTLE`) object class (available in Bioconductor, [QTLExperiment](https://bioconductor.org/packages/release/bioc/html/QTLExperiment.html)), where rows represent features (e.g., genes, transcripts, genomic regions), columns represent states, and assays are the various summary statistics.
 
-|                |               |
-| -------------- | ------------- |
-| Project Status | [![Project Status.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) |
-
 
 ## Installation and Usage
 
