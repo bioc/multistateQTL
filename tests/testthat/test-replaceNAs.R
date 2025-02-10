@@ -8,10 +8,12 @@ sim <- qtleSimulate(
     global=0.2, multi=0.4, unique=0.2, k=2)
 
 # Add some NA values to the betas, errors and lfsrs
+# Sample 1000 indices from the number of elements in the matrix (cols*rows)
 na_pattern <- sample(seq(1, ncol(sim)*nrow(sim)), 1000)
 
 sim_na <- sim
 
+# Indices refer to column-wise element of matrix. 
 assay(sim_na, "betas")[na_pattern] <- NA
 assay(sim_na, "errors")[na_pattern] <- NA
 assay(sim_na, "lfsrs")[na_pattern] <- NA
@@ -65,19 +67,21 @@ test_that("NAs in betas and pvalues are replaced with constants", {
 })
 
 test_that("NAs in errors can be replaced with the mean", {
-    sim_comp <- getComplete(sim_na, n=0.5)
+    # Filter to rows with at least 75% of states complete
+    sim_comp <- getComplete(sim_na, n=0.25)
     sim_final <- replaceNAs(sim_comp)
 
-    # Indices of NA values for first state
+    # Indices of rows which have NA values for first state
     locations <- is.na(errors(sim_comp)[,1])
-
+    
+    # Calculate row means for means with NA values in first state
     means <- apply(
-        errors(sim_comp),
+        errors(sim_comp)[locations,],
         MARGIN = 1,
         FUN = function(x) {mean(x, na.rm = TRUE)})
 
     # errors get set to the mean
-    expect_true(all(abs(errors(sim_final)[locations,1] - means[locations]) < .Machine$double.eps))
+    expect_true(all(abs(errors(sim_final)[locations,1] - means) < .Machine$double.eps))
 })
 
 test_that("NAs in errors can be replaced with the median", {
