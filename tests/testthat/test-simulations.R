@@ -39,3 +39,4 @@ test_that("performance metrics errors work", {
 
     expect_error(simPerformance(sim))
 })
+

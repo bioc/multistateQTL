@@ -2,7 +2,7 @@
 # library(multistateQTL); library(testthat)
 # source("setup.R"); source("test-get-significant.R")
 
-qtle_sig <- callSignificance(qtle)
+qtle_sig <- callSignificance(qtle) 
 
 test_that("getSignificant requires callSignificance", {
     expect_error(getSignificant(qtle))
