@@ -233,6 +233,7 @@ sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
 sim_top <- runPairwiseSharing(sim_top)
 p1 <- plotPairwiseSharing(sim_top, annotate_cols=c("nSignificant", "multistateGroup"))
+p1
 ```
 
 
