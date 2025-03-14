@@ -31,6 +31,13 @@ using expression QTL (eQTL) summary statistics from the
 (GTEx) Project} (Version 8) for the ten tissues with the largest sample 
 sizes for eQTL mapping. The eQTL tests were filtered to include only
 eQTLs on chromosome 1 that were available in all 10 tissues.
+
+\code{qtleParams()} returns the parameters used for the plots in the vignette.
+\code{qtleParams2()} returns the parameter values 
+from the 'Orchestrating multi-state QTL analysis with R' manuscript
+and accompanying reproducible analysis workflow (see 
+\href{https://gitlab.svi.edu.au/biocellgen-public/WEEO_2022_multistateQTL}{
+WEEO_2022_multistateQTL}).
 }
 \examples{
 qtleParams()

@@ -154,6 +154,13 @@ qtleEstimate.list <- function(data, assay="pvalues", threshSig=0.01,
 #' (GTEx) Project} (Version 8) for the ten tissues with the largest sample 
 #' sizes for eQTL mapping. The eQTL tests were filtered to include only
 #' eQTLs on chromosome 1 that were available in all 10 tissues.
+#' 
+#' \code{qtleParams()} returns the parameters used for the plots in the vignette.
+#' \code{qtleParams2()} returns the parameter values 
+#' from the 'Orchestrating multi-state QTL analysis with R' manuscript
+#' and accompanying reproducible analysis workflow (see 
+#' \href{https://gitlab.svi.edu.au/biocellgen-public/WEEO_2022_multistateQTL}{
+#' WEEO_2022_multistateQTL}).
 #'
 #' @returns A list with the default parameter values which can be used when simulating multistateQTL
 #'   data.
@@ -174,6 +181,17 @@ qtleParams <- function() {
          betas.null.rate = 11.57387,
          cv.null.shape = 12.29935,
          cv.null.rate = 75.69514)
+}
+
+qtleParams2 <- function() {
+    list(betas.sig.shape = 2.160473,
+         betas.sig.rate = 14.19137,
+         cv.sig.shape = 16.6759,
+         cv.sig.rate = 35.56338,
+         betas.null.shape = 1.053135,
+         betas.null.rate = 22.55316,
+         cv.null.shape = 1.698207,
+         cv.null.rate = 0.7553863)
 }
 
 
