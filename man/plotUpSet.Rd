@@ -39,7 +39,7 @@ include the set size (set_size), combination size (comb_size), degree (deg).}
 
 \item{set_order}{Array specifying order of states.}
 
-\item{...}{further arguments passed to \code{\link[Rtsne]{Rtsne}}}
+\item{...}{Further arguments passed to \code{\link[UpSet]{UpSet}}}
 }
 \value{
 Returns a \code{ComplexHeatmap} object.

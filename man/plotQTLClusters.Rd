@@ -16,7 +16,8 @@ plotQTLClusters(
   columnOrder = NULL,
   rowOrder = NULL,
   row_km = 0,
-  column_km = 0
+  column_km = 0,
+  ...
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ column(s) in rowData to be plotted to annotate QTL tests.}
 \item{row_km}{Set k for k-means clustering of tests.}
 
 \item{column_km}{Set k for k-means clustering of states}
+
+\item{...}{Further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.}
 }
 \value{
 Returns a \code{ComplexHeatmap} object.

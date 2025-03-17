@@ -34,6 +34,11 @@ test_that("plot pairwise sharing works", {
     p1 <- plotPairwiseSharing(sim_top)
 
     expect_output(print(class(p1)), "Heatmap")
+    
+    # Test that plot pairwise sharing passes additional arguments to 
+    # ComplexHeatmap::Heatmap
+    p2 <- plotPairwiseSharing(sim_top, row_dend_side = "right")
+    expect_output(print(class(p2)), "Heatmap")
 })
 
 
@@ -68,6 +73,9 @@ test_that("produce pairwise sharing plots with complex column annotations", {
 test_that("produce upset plots with complex row annotations", {
     p1 <- plotUpSet(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"))
     expect_output(print(class(p1)), "Heatmap")
+    
+    p2 <- plotUpSet(sim_top, annotateColsBy = c("nSignificant", "multistateGroup"), bg_col = "000000")
+    expect_output(print(class(p2)), "Heatmap")
 })
 
 test_that("upset plot errors work", {
@@ -107,9 +115,16 @@ test_that("plot QTL clusters works", {
                 annotateRowsBy = c("qtl_type", "mean_beta", "QTL"))
 
     expect_output(print(class(p1)), "Heatmap")
+    
+    p2 <- plotQTLClusters(sim_top_ms, annotateColsBy = c("multistateGroup"),
+        annotateRowsBy = c("qtl_type", "mean_beta", "QTL"),
+        row_dend_reorder = FALSE)
+    
+    # Test that plotQTLClusters can pass additional arguments through to 
+    # ComplexHeatmap::Heatmap
+    expect_output(print(class(p2)), "Heatmap")
 })
-
-
+    
 
 
 

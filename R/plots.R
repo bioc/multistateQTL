@@ -17,7 +17,7 @@
 #' @param distMethod Distance method used for hierarchical clustering. Valid
 #'        values are the supported methods in dist() function.
 #' @param size numeric scalar giving default font size for plotting theme.
-#' @param ... further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.
+#' @param ... Further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 
@@ -108,7 +108,8 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
         top_annotation = ann_cols, right_annotation = ann_rows,
         cell_fun = annotateCells,
         column_names_gp = gpar(fontsize = size),
-        row_names_gp = gpar(fontsize = size))
+        row_names_gp = gpar(fontsize = size),
+        ...)
 
 }
 
@@ -131,7 +132,7 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' @param comb_order characters specifying how sets should be ordered. Options
 #'        include the set size (set_size), combination size (comb_size), degree (deg).
 #' @param set_order Array specifying order of states.
-#' @param ... further arguments passed to \code{\link[Rtsne]{Rtsne}}
+#' @param ... Further arguments passed to \code{\link[UpSet]{UpSet}}
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 
@@ -211,7 +212,7 @@ plotUpSet <- function(object,
 
 
     UpSet(combMatrix, set_order = set_order,
-        comb_order = comb_order) + rowAnns
+        comb_order = comb_order, ...) + rowAnns
 
 }
 
@@ -238,6 +239,7 @@ plotUpSet <- function(object,
 #' @param show_row_names Logical to plot row (i.e. test) names.
 #' @param row_km Set k for k-means clustering of tests.
 #' @param column_km Set k for k-means clustering of states
+#' @param ... Further arguments passed to \code{\link[ComplexHeatmap]{Heatmap}}.
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 
@@ -279,7 +281,8 @@ plotQTLClusters <- function(object,
     columnOrder = NULL,
     rowOrder = NULL,
     row_km = 0,
-    column_km = 0) {
+    column_km = 0, 
+    ...) {
 
     if (!is(object, "QTLExperiment")) {
         stop("Object must be a QTLExperiment")
@@ -324,7 +327,8 @@ plotQTLClusters <- function(object,
         show_row_names = show_row_names,
         top_annotation = ann_state,
         row_km = row_km, column_km = column_km,
-        right_annotation = ann_tests)
+        right_annotation = ann_tests,
+        ...)
 }
 
 
