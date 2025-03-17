@@ -132,7 +132,7 @@ plotPairwiseSharing <- function(object, slot = "pairwiseSharing",
 #' @param comb_order characters specifying how sets should be ordered. Options
 #'        include the set size (set_size), combination size (comb_size), degree (deg).
 #' @param set_order Array specifying order of states.
-#' @param ... Further arguments passed to \code{\link[UpSet]{UpSet}}
+#' @param ... Further arguments passed to \code{\link[ComplexHeatmap]{UpSet}}
 #'
 #' @return Returns a \code{ComplexHeatmap} object.
 #' 

@@ -1,3 +1,6 @@
+## Changes in version 1.99.5 (2025-03-17)
+* Added support for additional arguments in plotting functions to be passed to ComplexHeatmap.
+
 ## Changes in version 1.99.0 (2025-03-07)
 * Patches to make multistateQTL compatible with major change to internal representations in QTLExperiment.
 
