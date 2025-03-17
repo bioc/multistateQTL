@@ -2,6 +2,7 @@
 % Please edit documentation in R/sim_estimate.R
 \name{qtleEstimate}
 \alias{qtleEstimate}
+\alias{qtleParams2}
 \title{Estimate parameters from real data for simulating multi-state QTL summary statistics}
 \usage{
 qtleEstimate(
@@ -11,6 +12,8 @@ qtleEstimate(
   threshNull = 0.1,
   verbose = TRUE
 )
+
+qtleParams2()
 }
 \arguments{
 \item{data}{A `QTLExperiment` object or named list containing "betas" and

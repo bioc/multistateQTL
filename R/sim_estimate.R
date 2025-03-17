@@ -182,7 +182,8 @@ qtleParams <- function() {
          cv.null.shape = 12.29935,
          cv.null.rate = 75.69514)
 }
-
+#' @rdname qtleEstimate
+#' @export
 qtleParams2 <- function() {
     list(betas.sig.shape = 2.160473,
          betas.sig.rate = 14.19137,
