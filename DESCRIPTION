@@ -21,11 +21,11 @@ Depends:
     QTLExperiment,
     SummarizedExperiment,
     ComplexHeatmap,
-    data.table,
     collapse
 Imports: 
     methods,
     S4Vectors,
+    data.table,
     grid,
     dplyr,
     tidyr,
