@@ -17,7 +17,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Amelia Dunstone \email{amelia.dunstone@svi.edu.au} (\href{https://orcid.org/0009-0009-6426-1529}{ORCID}) [contributor]
+\strong{Maintainer}: Amelia Dunstone \email{amelia.dunstone@svi.edu.au} (\href{https://orcid.org/0009-0009-6426-1529}{ORCID})
 
 Authors:
 \itemize{

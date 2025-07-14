@@ -8,7 +8,7 @@ test_that("plot simulation params works", {
 
     p1 <- plotSimulationParams(params=params)
 
-    expect_equal(class(p1), c("gg", "ggplot"))
+    expect_true(ggplot2::is_ggplot(p1))
 })
 
 test_that("plot compare states works", {
@@ -17,7 +17,7 @@ test_that("plot compare states works", {
 
     p1 <- plotCompareStates(sim_top, x="S01", y="S02")
 
-    expect_equal(class(p1[[1]]), c("gg", "ggplot"))
+    expect_true(ggplot2::is_ggplot(p1[[1]]))
     expect_equal(class(p1[[2]]), "table")
 })
 
