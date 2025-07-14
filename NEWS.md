@@ -1,3 +1,7 @@
+## Changes in version 2.1.1 (2025-07-14)
+* Moved data.table to imports instead of depends.
+* Updated testing to avoid error with ggplot2 version 4.0.0.
+
 ## Changes in version 1.99.5 (2025-03-17)
 * Added support for additional arguments in plotting functions to be passed to ComplexHeatmap.
 
