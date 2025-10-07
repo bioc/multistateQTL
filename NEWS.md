@@ -1,3 +1,6 @@
+## Changes in version 2.1.2 (2025-10-07)
+* Updated callSignificance so that it works with one state.  
+
 ## Changes in version 2.1.1 (2025-07-14)
 * Moved data.table to imports instead of depends.
 * Updated testing to avoid error with ggplot2 version 4.0.0.

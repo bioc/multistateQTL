@@ -50,6 +50,22 @@ test_that("getSignificant in simple mode works with one and two thresholds", {
     expect_true(all(rowSums(assay(test, "significant")) >= rowSums(pvalues(test) <= 0.1)))
 })
 
+test_that("getSignificant works for one state", {
+    
+    qtle_one <- qtle[, 1]
+    
+    test1 <- callSignificance(qtle_one, thresh=0.1, mode="simple")
+    test1 <- getSignificant(test1)
+    
+    expect_equal(rowSums(pvalues(test1) <= 0.1), rowSums(assay(test1, "significant")))
+    
+    test2 <- callSignificance(qtle_one, thresh=0.1, secondThresh=0.5, mode="simple")
+    test2 <- getSignificant(test2)
+    
+    expect_true(all(rowSums(assay(test2, "significant")) >= rowSums(pvalues(test2) <= 0.1)))
+    expect_equal(assay(test1, "significant"), assay(test2, "significant"))
+})
+
 test_that("getSignificant argument matching works", {
 
     # Test that argument matching works for `mode`

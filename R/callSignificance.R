@@ -151,7 +151,7 @@ setMethod("callSignificance", "QTLExperiment",
 
     state_thresh <- t(as.data.frame(state_thresh))
     state_thresh <- state_thresh[rep(seq_len(nrow(state_thresh)),
-                                     each = nrow(object)), ]
+                                     each = nrow(object)), , drop = FALSE]
     return(state_thresh)
 }
 
