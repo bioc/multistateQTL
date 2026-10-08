@@ -6,4 +6,7 @@
 ^LICENSE\.md$
 ^doc$
 ^Meta$
+^inst/extdata/GTEx_V8/GTEx_Analysis_v8_eQTL$
 ^inst/extdata/GTEx_V8$
+vignettes/mashr_QTL.Rmd
+vignettes/GTEx_Example_Analysis.Rmd

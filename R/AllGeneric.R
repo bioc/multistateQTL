@@ -5,3 +5,4 @@ setGeneric("callSignificance", function(object, ...) standardGeneric("callSignif
 #' @export
 #' @rdname callSignificance
 setGeneric("callSignificance<-", function(object, ..., value) standardGeneric("callSignificance<-"))
+

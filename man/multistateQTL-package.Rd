@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Amelia Dunstone \email{amelia.dunstone@svi.edu.au} (\href{https://orcid.org/0009-0009-6426-1529}{ORCID})
   \item Christina Del Azodi \email{cazodi@svi.edu.au}
 }
 

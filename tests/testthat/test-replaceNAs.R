@@ -9,6 +9,7 @@ sim <- qtleSimulate(
 
 # Add some NA values to the betas, errors and lfsrs
 # Sample 1000 indices from the number of elements in the matrix (cols*rows)
+set.seed(1)
 na_pattern <- sample(seq(1, ncol(sim)*nrow(sim)), 1000)
 
 sim_na <- sim
@@ -18,6 +19,11 @@ assay(sim_na, "betas")[na_pattern] <- NA
 assay(sim_na, "errors")[na_pattern] <- NA
 assay(sim_na, "lfsrs")[na_pattern] <- NA
 
+# NOTE: Previously this step removed 4 rows without needing to set a seed
+# directly before the "sample" line. 
+# I've added another set.seed() right before this, but its possible that the 
+# sample line was not the issue and that the generated 'sim' object had 
+# different values instead. 
 test_that("qtle can be subset to only rows with mostly complete entries", {
 
     # Have data for at least half of the states

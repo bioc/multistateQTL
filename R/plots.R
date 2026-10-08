@@ -451,19 +451,13 @@ plotSimulationParams <- function(params, n=1e5){
     if ( !is(params, "list") )
         stop("params must be a list with names as described in ?qtleParams")
 
-    demo_data <- as.data.frame(
-        list(
-            statistic=c(rep("beta", n*2), rep("CV", n*2)),
-            qtl_type=rep(c(rep("significant", n), rep("not significant", n)), 2),
-            value=c(
-                rgamma(n, params$betas.sig.shape,
-                    params$betas.sig.rate),
-                rgamma(n, params$betas.null.shape,
-                    params$betas.null.rate),
-                rgamma(n, params$cv.sig.shape,
-                    params$cv.sig.rate),
-                rgamma(n, params$cv.null.shape,
-                    params$cv.null.rate))))
+    demo_data <- data.frame(
+        statistic=c(rep("beta", n*2), rep("CV", n*2)),
+        qtl_type=rep(c(rep("significant", n), rep("not significant", n)), 2),
+        value=c(rgamma(n, params$betas.sig.shape, params$betas.sig.rate),
+            rgamma(n, params$betas.null.shape, params$betas.null.rate),
+            rgamma(n, params$cv.sig.shape, params$cv.sig.rate),
+            rgamma(n, params$cv.null.shape, params$cv.null.rate)))
 
     ggplot(demo_data, aes(x=value, fill=qtl_type, color=qtl_type)) +
         geom_density(alpha=0.2) +

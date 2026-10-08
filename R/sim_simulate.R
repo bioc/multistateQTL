@@ -220,7 +220,7 @@ simulateBetas <- function(key, params, states, betaSd, verbose){
 
     # Simulate null betas for all tests
     sim_betas <- t(data.frame(lapply(key[, "mean_beta"],
-                                     FUN = function(x) rnorm(length(states), x, betaSd))))
+        FUN = function(x) rnorm(length(states), x, betaSd))))
     colnames(sim_betas) <- states
     rownames(sim_betas) <- key$id
 

@@ -1,3 +1,7 @@
+## Changes in version 2.5.1 (2026-10-08)
+* Fixed error in the test for replaceNAs. 
+* Updated roxygen2 version
+
 ## Changes in version 2.1.2 (2025-10-07)
 * Updated callSignificance so that it works with one state.  
 

@@ -190,16 +190,16 @@ getTopHits <- function(qtle, mode=c("global", "state"),
     } else if (mode == "state"){
 
         test_statistics <- as.data.frame(assay(qtle, assay))
-    if (assaySig %in% names(assays(qtle))) {
-        test_statistics[!assay(qtle, assaySig)] <- 1
-    }
-    keep <- test_statistics %>%
-        fmutate(id=rownames(qtle),
-            feature_id=feature_id(qtle)) %>%
-        pivot_longer(-c(feature_id, id)) %>%
-        group_by(feature_id, name) %>%
-        slice_min(value, n = 1, with_ties = FALSE) %>%
-        filter(value < 1)
+        if (assaySig %in% names(assays(qtle))) {
+            test_statistics[!assay(qtle, assaySig)] <- 1
+        }
+        keep <- test_statistics %>%
+            fmutate(id=rownames(qtle),
+                feature_id=feature_id(qtle)) %>%
+            pivot_longer(-c(feature_id, id)) %>%
+            group_by(feature_id, name) %>%
+            slice_min(value, n = 1, with_ties = FALSE) %>%
+            filter(value < 1)
     }
 
     keep <- unique(keep$id)

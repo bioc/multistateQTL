@@ -17,7 +17,7 @@ test_that("getSignificant percentage inputs work", {
         getSignificant(qtle_sig, n = 0.2*nStates))
 })
 
-test_that("getTopPerFeature selects the correct snp-feature pair", {
+test_that("getTopHits selects the correct snp-feature pair", {
     qtle_top <- getTopHits(qtle_sig, assay="lfsrs", mode="state", verbose = TRUE)
     # Just looking at first state and geneC
     expect_equal(

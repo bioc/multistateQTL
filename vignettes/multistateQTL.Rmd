@@ -96,7 +96,7 @@ params
 
 Looking at the distributions defined by these estimated parameters, the simulated effect sizes for significant QTL will tend to be larger, while the simulated coefficient of variation values will be smaller than for the non-significant QTL.
 
-```{r plot-estimated params, fig.height=3, fig.width=6, fig.cap="Gamma distributions defined by the parameters estimated by qtleEstimate."}
+```{r plot-estimated-params, fig.height=3, fig.width=6, fig.cap="Gamma distributions defined by the parameters estimated by qtleEstimate."}
 plotSimulationParams(params=params)
 ```
 
@@ -231,7 +231,7 @@ Column annotations are used to show the number of significant eQTLs for each sta
 ```{r pairwise-sharing}
 sim_sig <- getSignificant(sim)
 sim_top <- getTopHits(sim_sig, assay="lfsrs", mode="state")
-sim_top <- runPairwiseSharing(sim_top)
+sim_top <- runPairwiseSharing(sim_top, factor = 0.9)
 p1 <- plotPairwiseSharing(sim_top, annotateColsBy=c("nSignificant", "multistateGroup"))
 p1
 ```
@@ -279,9 +279,6 @@ plotQTLClusters(
     annotateColsBy=c("multistateGroup"),
     annotateRowsBy=c("qtl_type", "mean_beta", "QTL"))
 ```
-
-
-
 
 # Session Info
 
