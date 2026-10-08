@@ -9,6 +9,7 @@ sim <- qtleSimulate(
 
 # Add some NA values to the betas, errors and lfsrs
 # Sample 1000 indices from the number of elements in the matrix (cols*rows)
+set.seed(1)
 na_pattern <- sample(seq(1, ncol(sim)*nrow(sim)), 1000)
 
 sim_na <- sim
